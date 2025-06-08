@@ -1,81 +1,87 @@
-# 🛣️ NurseOS iOS – Development Roadmap
+# 🛣️ NurseOS iOS – Roadmap v6
 
 _Last updated: June 7, 2025_
 
 ---
 
-## ✅ Phase 1: UI + Riverpod State (Complete)
+## ✅ Phase 1: Core UI + Mock State (Complete)
 
-- [x] Login / Sign-up UI (mock only)
-- [x] Home screen with time-based greeting
-- [x] Patient list screen with filter + sorting
-- [x] Patient detail screen with vitals + care plans
-- [x] Vitals entry screen (mock save)
-- [x] Care plan viewer (per-patient)
-- [x] Profile viewing (photo, name, pronouns)
-- [x] Routing + state hooks
-- [x] User/patient photos, pronouns, gamification (XP, level)
-
----
-
-## 🔄 Phase 2: Repository Refactor
-
-- [x] Abstract repository pattern (`VitalsRepository`, `PatientRepository`)
-- [x] `Fake*Repository` implementations
-- [ ] `CarePlanRepository` implementation
-- [ ] Centralize test/mock data (JSON or `.dart` file)
-- [ ] Begin provider swaps using feature flags
+- [x] Login / Sign-up (UI only)
+- [x] Home screen with greeting
+- [x] Patient list screen (mocked, sortable)
+- [x] Patient detail screen (photo, vitals, care plan)
+- [x] Vitals entry screen (mocked)
+- [x] Mock user support (photo, XP, level)
+- [x] Routing with Navigator
+- [x] Riverpod state architecture
+- [x] Pronouns and profile photo support
 
 ---
 
-## 🎯 Phase 3: Gamification Expansion
+## 🔄 Phase 2: Repository & Mock Layer
 
-- [ ] XP visualization on dashboard/profile
-- [ ] XP rewards for completing care tasks or vitals
-- [ ] Level-up logic for user
+- [x] `VitalsRepository`, `PatientRepository` abstraction
+- [x] `FakeVitalsRepository` with cache and mock save
+- [x] `FakePatientRepository` with JSON fallback
+- [ ] `CarePlanRepository` (Fake and Abstract)
+- [ ] All mock data centralized in `.dart` or `.json` assets
+- [ ] All state powered by repository interfaces
+
+---
+
+## 🎮 Phase 3: Gamification + UX Polish
+
+- [ ] XP rewarded for completed vitals entries
+- [ ] Level system increment logic
+- [ ] XP & level display in dashboard/profile
+- [ ] Auto-resizing Card UIs (care plan, vitals, etc.)
+- [ ] iOS layout polish across simulators
 
 ---
 
 ## 🧑‍⚕️ Phase 4: Patient & Profile Editing
 
-- [ ] Edit patient profiles (pronouns, room, photo)
-- [ ] Create new patient from FAB
-- [ ] Add/edit user profile (photo, display name)
-- [ ] All changes saved to mock layer
+- [ ] Edit patient info (room, pronouns, photo)
+- [ ] Create new patient
+- [ ] Edit current user profile
+- [ ] All changes saved in mock state only
 
 ---
 
-## 🧠 Phase 5: GPT/NLP Logic (Stubbed)
+## 🧠 Phase 5: GPT-Enabled Stubs (NLP Planned)
 
-- [ ] Care plan auto-generation (GPT-4 placeholder logic)
-- [ ] Patient summary summarizer (stub only)
-- [ ] Vitals anomaly notes (no live GPT calls)
+- [ ] Stub care plan generator (GPT placeholder)
+- [ ] Stub patient summary summarizer
+- [ ] Stub vitals anomaly detection logic
+
+🛑 _No actual OpenAI integration until backend milestone_
 
 ---
 
-## 🔐 Phase 6: Firebase Integration
+## 🔐 Phase 6: Firebase Integration (Final)
 
-- [ ] Add real Firebase repos (Auth, Firestore)
-- [ ] Match UserModel to Firebase Auth
-- [ ] Toggle Firebase with feature flag
-- [ ] Add auth logic (sign in/out, session)
-- [ ] Secure Firebase rules (HIPAA-aware)
+- [ ] Implement `Firebase*Repository` versions
+- [ ] Swap via feature flag toggle
+- [ ] Add Firebase Auth logic (sign in/out)
+- [ ] Match `UserModel` to Firebase Auth expectations
+- [ ] HIPAA-aware Firestore rules
 
 ---
 
 ## 🧪 QA / Device Testing
 
-- ✅ Simulator ready (Intel Mac Podfile patch)
-- 🔜 Physical device test before Firebase
+- ✅ Intel Mac patch in Podfile
+- ✅ Works on iOS Simulator
+- 🔜 Physical device validation (before Firebase)
 - ❌ Android/web deferred
 
 ---
 
-## 🔐 Technical Policies
+## 📦 Technical Principles
 
-- Riverpod only (State/AsyncNotifier)
-- Mock-first architecture
-- Platform locked to iOS
-- HIPAA-aligned minimalist UX
+- `StateNotifier` + `AsyncNotifier` only
+- UI stays logic-free (uses Riverpod exclusively)
+- Firebase is feature-flagged and opt-in
+- HIPAA-compliant minimal UI by design
 
 ---
