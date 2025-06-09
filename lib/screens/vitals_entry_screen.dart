@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nurse_os/models/vitals_model.dart';
+import 'package:nurse_os/state/vitals_provider.dart';
 import 'package:uuid/uuid.dart';
-import '../models/vitals_model.dart';
-import '../state/vitals_provider.dart';
-import 'package:nurse_os/state/user_state.dart';
-import 'package:nurse_os/state/vitals_controller.dart';
 
 class VitalsEntryScreen extends ConsumerStatefulWidget {
   final String patientId;
@@ -19,40 +17,55 @@ class _VitalsEntryScreenState extends ConsumerState<VitalsEntryScreen> {
   final _formKey = GlobalKey<FormState>();
   final _uuid = const Uuid();
 
-  double? _temperature;
-  int? _pulse;
-  int? _systolic;
-  int? _diastolic;
-  int? _respiration;
-  int? _oxygen;
-  String? _notes;
+  double? temperature;
+  int? pulse;
+  int? systolic;
+  int? diastolic;
+  int? respirationRate;
+  int? oxygenSaturation;
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      final vitals = VitalsModel(
+        id: _uuid.v4(),
+        patientId: widget.patientId,
+        recordedBy: 'nurse_001', // Mock nurse ID
+        recordedAt: DateTime.now(),
+        temperature: temperature!,
+        pulse: pulse!,
+        systolic: systolic!,
+        diastolic: diastolic!,
+        respirationRate: respirationRate!,
+        oxygenSaturation: oxygenSaturation!,
+      );
+
+      ref.read(vitalsControllerProvider(widget.patientId).notifier).addVitals(vitals);
+      Navigator.pop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Enter Vitals')),
+      appBar: AppBar(title: const Text("Enter Vitals")),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              _buildField(label: 'Temperature (°F)', onSaved: (v) => _temperature = double.tryParse(v ?? '')),
-              _buildField(label: 'Pulse (bpm)', onSaved: (v) => _pulse = int.tryParse(v ?? '')),
-              _buildField(label: 'Systolic BP', onSaved: (v) => _systolic = int.tryParse(v ?? '')),
-              _buildField(label: 'Diastolic BP', onSaved: (v) => _diastolic = int.tryParse(v ?? '')),
-              _buildField(label: 'Respiration Rate', onSaved: (v) => _respiration = int.tryParse(v ?? '')),
-              _buildField(label: 'Oxygen Saturation (%)', onSaved: (v) => _oxygen = int.tryParse(v ?? '')),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Notes (optional)'),
-                maxLines: 3,
-                onSaved: (v) => _notes = v,
-              ),
+              _buildNumberField("Temperature (°F)", (val) => temperature = double.tryParse(val ?? '')),
+              _buildNumberField("Pulse (bpm)", (val) => pulse = int.tryParse(val ?? '')),
+              _buildNumberField("Systolic BP", (val) => systolic = int.tryParse(val ?? '')),
+              _buildNumberField("Diastolic BP", (val) => diastolic = int.tryParse(val ?? '')),
+              _buildNumberField("Respiration Rate", (val) => respirationRate = int.tryParse(val ?? '')),
+              _buildNumberField("Oxygen Saturation (%)", (val) => oxygenSaturation = int.tryParse(val ?? '')),
               const SizedBox(height: 20),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.save),
-                label: const Text('Save Vitals'),
-                onPressed: _handleSubmit,
+              ElevatedButton(
+                onPressed: _submit,
+                child: const Text("Submit"),
               )
             ],
           ),
@@ -61,36 +74,15 @@ class _VitalsEntryScreenState extends ConsumerState<VitalsEntryScreen> {
     );
   }
 
-  Widget _buildField({required String label, required void Function(String?) onSaved}) {
-    return TextFormField(
-      decoration: InputDecoration(labelText: label),
-      keyboardType: TextInputType.number,
-      onSaved: onSaved,
+  Widget _buildNumberField(String label, Function(String?) onSaved) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextFormField(
+        decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
+        keyboardType: TextInputType.number,
+        validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+        onSaved: onSaved,
+      ),
     );
-  }
-
-  void _handleSubmit() async {
-  if (_formKey.currentState?.validate() ?? false) {
-    _formKey.currentState?.save();
-
-    final vitals = VitalsModel(
-      id: _uuid.v4(),
-      patientId: widget.patientId,
-      timestamp: DateTime.now(),
-      temperature: _temperature ?? 0,
-      pulse: _pulse ?? 0,
-      systolicBP: _systolic ?? 0,
-      diastolicBP: _diastolic ?? 0,
-      respirationRate: _respiration ?? 0,
-      oxygenSaturation: _oxygen ?? 0,
-      recordedBy: ref.read(currentUserProvider).fullName,
-      notes: _notes,
-    );
-
-    await ref.read(vitalsControllerProvider(widget.patientId).notifier).addVitals(vitals);
-
-    if (!mounted) return;
-    Navigator.pop(context);
-    }
   }
 }

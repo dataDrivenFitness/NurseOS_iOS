@@ -17,7 +17,7 @@ class AuthController extends StateNotifier<bool> {
     return success;
   }
 
-  void logout() {
+  Future<void> signOut() async {
     state = false;
     _authService.logout();
   }

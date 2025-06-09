@@ -1,20 +1,14 @@
 // lib/state/patient_list_controller.dart
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nurse_os/models/patient_model.dart';
-import 'package:nurse_os/services/fake_patient_repository.dart';
+import '../models/patient_model.dart';
+import '../repositories/patient_repository.dart';
 import 'patient_repository_provider.dart';
+import 'package:nurse_os/services/mock_patient_data.dart';
 
-class PatientListController extends AsyncNotifier<List<PatientModel>> {
-  late final PatientRepository _repository;
 
-  @override
-  Future<List<PatientModel>> build() async {
-    _repository = ref.read(patientRepositoryProvider);
-    return _repository.getAllPatients();
-  }
-}
+final patientListControllerProvider = FutureProvider<List<PatientModel>>((ref) async {
+  await Future.delayed(const Duration(milliseconds: 300));
+  return mockPatients; // No filtering!
+});
 
-final patientListControllerProvider =
-    AsyncNotifierProvider<PatientListController, List<PatientModel>>(
-        () => PatientListController());

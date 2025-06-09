@@ -1,91 +1,100 @@
+// Final version with only the centered vitals button row preserved and VitalsActionButtons removed
+
 import 'package:flutter/material.dart';
+import 'package:nurse_os/widgets/risk_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nurse_os/state/patient_list_controller.dart';
-import 'package:nurse_os/screens/vitals_entry_screen.dart';
-import 'package:nurse_os/screens/care_plan_screen.dart';
-import 'package:nurse_os/widgets/vitals_history_widget.dart';
+import '../models/patient_model.dart';
+import '../state/display_preferences_provider.dart';
+import '../utils/image_utils.dart';
+import 'package:nurse_os/utils/risk_utils.dart';
+import '../widgets/vitals_interactive_section.dart';
+import '../widgets/care_plan_section.dart';
 
 class PatientDetailScreen extends ConsumerWidget {
-  final String patientId;
+  final PatientModel patient;
 
-  const PatientDetailScreen({super.key, required this.patientId});
+  const PatientDetailScreen({super.key, required this.patient});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final patientsAsync = ref.watch(patientListControllerProvider);
+    final prefs = ref.watch(displayPreferencesProvider);
+    final image = imageProviderFromPath(patient.photoUrl);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Patient Profile')),
-      body: patientsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
-        data: (patients) {
-          final patient = patients.firstWhere((p) => p.id == patientId);
-          return ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              _PatientHeader(patient: patient),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.monitor_heart),
-                label: const Text('Enter Vitals'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => VitalsEntryScreen(patientId: patient.id),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              VitalsHistoryWidget(patientId: patient.id),
-              const SizedBox(height: 24),
-              Text('Care Plans', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 8),
-              CarePlanScreen(patientId: patient.id),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _PatientHeader extends StatelessWidget {
-  final dynamic patient;
-
-  const _PatientHeader({required this.patient});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final admitted = patient.admittedAt.toLocal().toIso8601String().split('T').first;
-    final fullName = '${patient.firstName} ${patient.lastName}';
-
-    return Row(
-      children: [
-        CircleAvatar(
-          radius: 36,
-          backgroundImage: NetworkImage(patient.photoUrl),
-          backgroundColor: Colors.indigo,
-        ),
-        const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(fullName, style: theme.textTheme.headlineMedium),
-            Text(
-              patient.pronouns,
-              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+      appBar: AppBar(title: const Text('Patient Details')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Center(
+            child: CircleAvatar(
+              radius: 50,
+              backgroundImage: image,
+              backgroundColor: Colors.grey[200],
             ),
-            const SizedBox(height: 4),
-            Text('Room ${patient.roomNumber}', style: theme.textTheme.bodyLarge),
-            Text('Diagnosis: ${patient.diagnosis}', style: theme.textTheme.bodyLarge),
-            Text('Admitted: $admitted', style: theme.textTheme.bodyMedium),
-          ],
-        ),
-      ],
+          ),
+          const SizedBox(height: 12),
+          Center(
+            child: Text(
+              '${patient.firstName} ${patient.lastName}',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          ),
+          const SizedBox(height: 16),
+          if (prefs.showAge) Text('Age: ${patient.age}'),
+          if (prefs.showPreferredPronouns && patient.pronouns != null)
+            Text('Pronouns: ${patient.pronouns}'),
+          if (prefs.showRoomNumber) Text('Room: ${patient.roomNumber}'),
+          if (prefs.showDiagnosis) Text('Diagnosis: ${patient.diagnosis}'),
+          if ((prefs.showHighRiskAlerts &&
+              (patient.riskLevel == RiskLevel.medium || patient.riskLevel == RiskLevel.high)))
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: patient.riskLevel == RiskLevel.high ? Colors.red : Colors.orange,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '${patient.riskLevel?.name.toUpperCase() ?? 'UNKNOWN'} RISK',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+
+          if (prefs.showTags && patient.tags != null && patient.tags!.isNotEmpty)
+            RiskTagRow(tags: patient.tags!),
+
+          const Divider(height: 32),
+          VitalsInteractiveSection(patientId: patient.id),
+          const SizedBox(height: 16),
+
+          Center(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 12,
+              runSpacing: 8,
+              children: [
+                FilledButton.icon(
+                  onPressed: () {
+                    // TODO: Navigate to vitals entry
+                  },
+                  icon: const Icon(Icons.add),
+                  label: const Text("Add Vitals"),
+                ),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    // TODO: Navigate to vitals graph
+                  },
+                  icon: const Icon(Icons.show_chart),
+                  label: const Text("View Graph"),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 24),
+          CarePlanSection(patientId: patient.id),
+        ],
+      ),
     );
   }
 }

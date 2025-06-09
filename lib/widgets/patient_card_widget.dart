@@ -1,43 +1,67 @@
+
 import 'package:flutter/material.dart';
+import 'package:nurse_os/widgets/risk_widgets.dart';
 import 'package:nurse_os/models/patient_model.dart';
+import 'package:nurse_os/utils/risk_utils.dart';
 
 class PatientCardWidget extends StatelessWidget {
   final PatientModel patient;
   final VoidCallback onTap;
+  final bool showTags;
+  final bool showHighRiskAlerts;
+  final bool showDiagnosis;
+  final bool showAge;
+  final bool showRoomNumber;
+  final bool showPreferredPronouns;
 
-  const PatientCardWidget({required this.patient, required this.onTap, super.key});
+  const PatientCardWidget({
+    Key? key,
+    required this.patient,
+    required this.onTap,
+    this.showTags = true,
+    this.showHighRiskAlerts = true,
+    this.showDiagnosis = true,
+    this.showAge = true,
+    this.showRoomNumber = true,
+    this.showPreferredPronouns = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final fullName = '${patient.firstName} ${patient.lastName}';
-
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: theme.cardColor,
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: ListTile(
         onTap: onTap,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        leading: CircleAvatar(
-          radius: 28,
-          backgroundImage: NetworkImage(patient.photoUrl),
-          backgroundColor: Colors.indigo,
-        ),
-        title: Text(
-          fullName,
-          style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text('${patient.diagnosis} • Room ${patient.roomNumber}'),
-        trailing: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.center,
+        leading: patient.photoUrl != null
+            ? CircleAvatar(
+                radius: 24,
+                backgroundImage: NetworkImage(patient.photoUrl!),
+              )
+            : const CircleAvatar(
+                radius: 24,
+                child: Icon(Icons.person),
+              ),
+        title: Text('${patient.firstName} ${patient.lastName}'),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${patient.age} yrs', style: theme.textTheme.bodyMedium),
-            Text(patient.pronouns, style: theme.textTheme.labelLarge?.copyWith(color: Colors.grey[400])),
+            if (showDiagnosis) Text('Diagnosis: ${patient.diagnosis}'),
+            
+            if (showTags && patient.tags != null && patient.tags!.isNotEmpty)
+              RiskTagRow(tags: patient.tags!),
+
+            if (showAge) Text('Age: ${patient.age}'),
+            if (showRoomNumber) Text('Room: ${patient.roomNumber}'),
+            if (showPreferredPronouns && patient.pronouns != null)
+              Text('Pronouns: ${patient.pronouns}'),
           ],
         ),
+        trailing: (showHighRiskAlerts && patient.riskLevel == RiskLevel.high)
+            ? RiskLevelBadge(level: patient.riskLevel)
+            : null,
       ),
     );
   }
+
+  
 }

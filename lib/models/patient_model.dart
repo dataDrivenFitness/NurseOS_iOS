@@ -1,3 +1,6 @@
+
+import 'package:nurse_os/utils/risk_utils.dart' show RiskLevel;
+
 class PatientModel {
   final String id;
   final String firstName;
@@ -5,9 +8,11 @@ class PatientModel {
   final int age;
   final String roomNumber;
   final String diagnosis;
-  final DateTime admittedAt;
-  final String pronouns;
-  final String photoUrl;
+  final List<String>? tags;
+  final RiskLevel? riskLevel;
+  final String? photoUrl;
+  final String? pronouns;
+  final DateTime? admittedAt;
 
   PatientModel({
     required this.id,
@@ -16,27 +21,12 @@ class PatientModel {
     required this.age,
     required this.roomNumber,
     required this.diagnosis,
-    required this.admittedAt,
-    required this.pronouns,
-    required this.photoUrl,
+    this.tags,
+    this.riskLevel,
+    this.photoUrl,
+    this.pronouns,
+    this.admittedAt,
   });
-
-  String get fullName => '\$firstName \$lastName';
-  String get displayNameWithPronouns => '\$fullName (\${pronouns.toLowerCase()})';
-
-  factory PatientModel.fromMap(Map<String, dynamic> data) {
-    return PatientModel(
-      id: data['id'],
-      firstName: data['firstName'],
-      lastName: data['lastName'],
-      age: data['age'],
-      roomNumber: data['roomNumber'],
-      diagnosis: data['diagnosis'],
-      admittedAt: DateTime.parse(data['admittedAt']),
-      pronouns: data['pronouns'] ?? 'prefer not to say',
-      photoUrl: data['photoUrl'] ?? '',
-    );
-  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -46,9 +36,31 @@ class PatientModel {
       'age': age,
       'roomNumber': roomNumber,
       'diagnosis': diagnosis,
-      'admittedAt': admittedAt.toIso8601String(),
-      'pronouns': pronouns,
+      'tags': tags,
+      'riskLevel': riskLevel?.name,
       'photoUrl': photoUrl,
+      'pronouns': pronouns,
+      'admittedAt': admittedAt?.toIso8601String(),
     };
+  }
+
+  factory PatientModel.fromMap(Map<String, dynamic> map) {
+    return PatientModel(
+      id: map['id'],
+      firstName: map['firstName'],
+      lastName: map['lastName'],
+      age: map['age'],
+      roomNumber: map['roomNumber'],
+      diagnosis: map['diagnosis'],
+      tags: map['tags'] != null ? List<String>.from(map['tags']) : null,
+      riskLevel: map['riskLevel'] != null
+          ? RiskLevel.values.byName(map['riskLevel'])
+          : null,
+      photoUrl: map['photoUrl'],
+      pronouns: map['pronouns'],
+      admittedAt: map['admittedAt'] != null
+          ? DateTime.parse(map['admittedAt'])
+          : null,
+    );
   }
 }

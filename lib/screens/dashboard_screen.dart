@@ -34,7 +34,7 @@ class DashboardScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('$greeting,', style: Theme.of(context).textTheme.bodyLarge),
-                  Text('${user.firstName} ${user.lastName} $emoji',
+                  Text('Nurse ${user.firstName} $emoji',
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           )),

@@ -1,23 +1,34 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/vitals_model.dart';
+import 'package:nurse_os/models/vitals_model.dart';
+import 'package:nurse_os/state/vitals_repository_provider.dart';
+import 'package:nurse_os/services/vitals_repository.dart';
 
-class VitalsNotifier extends StateNotifier<List<VitalsModel>> {
+// Async read provider (vitals list)
+final vitalsProvider = FutureProvider.family<List<VitalsModel>, String>((ref, patientId) async {
+  final repository = ref.watch(vitalsRepositoryProvider);
+  return repository.getVitalsForPatient(patientId);
+});
+
+// StateNotifier for mutations (add vitals)
+final vitalsControllerProvider = StateNotifierProvider.family<VitalsController, List<VitalsModel>, String>(
+  (ref, patientId) {
+    final repository = ref.watch(vitalsRepositoryProvider);
+    return VitalsController(repository, patientId);
+  },
+);
+
+class VitalsController extends StateNotifier<List<VitalsModel>> {
+  final VitalsRepository repository;
   final String patientId;
 
-  VitalsNotifier(this.patientId) : super([]);
+  VitalsController(this.repository, this.patientId) : super([]);
 
-  void addVitals(VitalsModel vitals) {
+  Future<void> addVitals(VitalsModel vitals) async {
+    await repository.addVitals(vitals);
     state = [...state, vitals];
   }
 
-  VitalsModel? get lastEntry {
-    if (state.isEmpty) return null;
-    return state.last;
+  Future<void> loadInitial() async {
+    state = await repository.getVitalsForPatient(patientId);
   }
-
-  List<VitalsModel> get history => state.reversed.toList();
 }
-
-final vitalsProvider = StateNotifierProvider.family<VitalsNotifier, List<VitalsModel>, String>(
-  (ref, patientId) => VitalsNotifier(patientId),
-);

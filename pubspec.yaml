@@ -19,6 +19,9 @@ dependencies:
   flutter_riverpod: ^2.4.0
   shared_preferences: ^2.2.2
   image_picker: ^1.0.4
+  uuid: ^4.0.0
+  timeago: ^3.5.0
+  fl_chart: ^0.64.0
 
 dev_dependencies:
   flutter_test:

@@ -6,20 +6,26 @@ class FakePatientService {
     return [
       PatientModel(
         id: 'p1',
-        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         age: 68,
         roomNumber: '201B',
         diagnosis: 'CHF',
         admittedAt: DateTime.now().subtract(const Duration(days: 2)),
+        pronouns: 'he/him',
+        photoUrl: '',
         createdBy: 'demoUser123',
       ),
       PatientModel(
         id: 'p2',
-        name: 'Maria Santos',
+        firstName: 'Maria',
+        lastName: 'Santos', // ✅ FIXED: Added missing comma
         age: 54,
         roomNumber: '305A',
         diagnosis: 'COPD',
         admittedAt: DateTime.now().subtract(const Duration(days: 5)),
+        pronouns: 'she/her',
+        photoUrl: '',
         createdBy: 'demoUser123',
       ),
     ];
