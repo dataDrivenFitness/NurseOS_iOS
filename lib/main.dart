@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Screens
+import 'state/theme_provider.dart';
+import 'state/patient_provider.dart';
+import 'services/mock_patient_data.dart';
+
 import 'screens/login_screen.dart';
 import 'screens/edit_profile_screen.dart';
+import 'screens/vitals_entry_screen.dart';
 import 'screens/vitals_history_screen.dart';
 import 'screens/vitals_chart_screen.dart';
 import 'screens/vitals_dashboard_screen.dart';
-import 'screens/vitals_entry_screen.dart';
+import 'services/fake_patient_repository.dart';
 
-// Theme
-import 'state/theme_provider.dart';
+
 import 'themes/typography.dart';
 
 void main() {
-  runApp(const ProviderScope(child: NurseOSApp()));
+  runApp(
+    ProviderScope(
+      overrides: [
+        patientRepositoryProvider.overrideWithValue(
+          FakePatientRepository(patients: mockPatients),
+        ),
+      ],
+      child: const NurseOSApp(),
+    ),
+  );
 }
 
 class NurseOSApp extends ConsumerWidget {

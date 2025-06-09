@@ -4,14 +4,27 @@ import 'package:nurse_os/utils/risk_utils.dart';
 
 final mockPatients = [
   PatientModel(
+    id: '4',
+    firstName: 'Carlos',
+    lastName: 'Martinez',
+    age: 81,
+    roomNumber: '411D',
+    diagnosis: 'CHF',
+    tags: ['Oxygen', 'Daily Weights'],
+    riskLevel: determineRiskLevel('CHF'),
+    pronouns: 'he/him',
+    photoUrl: 'https://i.pravatar.cc/150?img=18',
+    admittedAt: DateTime.now().subtract(Duration(days: 5)),
+  ),
+  PatientModel(
     id: '1',
     firstName: 'Alice',
     lastName: 'Nguyen',
     age: 72,
     roomNumber: '302B',
     diagnosis: 'Hypertension',
-    tags: ['Fall Risk', 'Low Mobility'],
-    riskLevel: determineRiskLevel('Hypertension'),
+    tags: ['Fall Risk', 'Isolation'],
+    riskLevel: RiskLevel.high,
     pronouns: 'she/her',
     photoUrl: 'https://i.pravatar.cc/150?img=12',
     admittedAt: DateTime.now().subtract(Duration(days: 2)),
@@ -42,17 +55,5 @@ final mockPatients = [
     photoUrl: 'https://i.pravatar.cc/150?img=16',
     admittedAt: DateTime.now().subtract(Duration(days: 1, hours: 3)),
   ),
-  PatientModel(
-    id: '4',
-    firstName: 'Carlos',
-    lastName: 'Martinez',
-    age: 81,
-    roomNumber: '411D',
-    diagnosis: 'CHF',
-    tags: ['Oxygen', 'Daily Weights'],
-    riskLevel: determineRiskLevel('CHF'),
-    pronouns: 'he/him',
-    photoUrl: 'https://i.pravatar.cc/150?img=18',
-    admittedAt: DateTime.now().subtract(Duration(days: 5)),
-  ),
+
 ];
