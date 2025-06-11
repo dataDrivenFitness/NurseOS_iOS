@@ -14,45 +14,55 @@ class InMemoryVitalsRepository implements VitalsRepository {
   void _seedInitialData() {
     final now = DateTime.now();
 
-    _vitalsMap['p001'] = [
-      _createVitals('p001', now.subtract(const Duration(days: 1)), 98.4, 70, 120, 78, 16, 98, 'Nurse Alice'),
-    ];
+    // patient_001: 34 days of data
+    _vitalsMap['patient_001'] = List.generate(34, (i) {
+      final date = now.subtract(Duration(days: i));
+      return _createVitals('patient_001', date, 98.6 + (i % 3) * 0.2, 70 + (i % 5), 120 + (i % 4), 80 + (i % 4), 16, 98, 'Nurse Alice');
+    });
 
-    _vitalsMap['p002'] = [
-      _createVitals('p002', now.subtract(const Duration(days: 2)), 100.2, 90, 130, 85, 20, 95, 'Nurse Ben'),
-      _createVitals('p002', now.subtract(const Duration(hours: 6)), 99.3, 84, 126, 82, 18, 97, 'Nurse Ben'),
-      _createVitals('p002', now, 98.7, 80, 124, 81, 17, 98, 'Nurse Ben'),
-    ];
+    // patient_002: 4 entries
+    _vitalsMap['patient_002'] = List.generate(4, (i) {
+      final date = now.subtract(Duration(days: i));
+      return _createVitals('patient_002', date, 98.7, 75, 118, 78, 16, 97, 'Nurse Ben');
+    });
 
-    _vitalsMap['p003'] = [
-      _createVitals('p003', now.subtract(const Duration(days: 1, hours: 6)), 97.9, 65, 110, 70, 14, 99, 'Nurse Chen'),
-      _createVitals('p003', now.subtract(const Duration(hours: 10)), 98.1, 67, 112, 72, 15, 99, 'Nurse Chen'),
-      _createVitals('p003', now.subtract(const Duration(hours: 5)), 98.3, 69, 114, 74, 15, 98, 'Nurse Chen'),
+    // patient_003: no data
+    _vitalsMap['patient_003'] = [];
+
+    // patient_004: 8 entries
+    _vitalsMap['patient_004'] = List.generate(8, (i) {
+      final date = now.subtract(Duration(days: i));
+      return _createVitals('patient_004', date, 98.2 + (i % 2) * 0.3, 68 + (i % 4), 115 + (i % 3), 77 + (i % 3), 15, 97, 'Nurse Dana');
+    });
+
+    // patient_005: 1 entry
+    _vitalsMap['patient_005'] = [
+      _createVitals('patient_005', now.subtract(const Duration(days: 1)), 98.9, 72, 122, 79, 16, 99, 'Nurse Evan'),
     ];
   }
 
   VitalsModel _createVitals(
     String patientId,
-    DateTime timestamp,
-    double temp,
-    int hr,
-    int sbp,
-    int dbp,
-    int rr,
-    int spo2,
-    String takenBy,
+    DateTime recordedAt,
+    double temperature,
+    int pulse,
+    int systolic,
+    int diastolic,
+    int respiratoryRate,
+    int oxygenSaturation,
+    String recordedBy,
   ) {
     return VitalsModel(
-      id: _uuid.v4(),
+      uid: _uuid.v4(),
       patientId: patientId,
-      timestamp: timestamp,
-      temperature: temp,
-      heartRate: hr,
-      systolic: sbp,
-      diastolic: dbp,
-      respiratoryRate: rr,
-      oxygenSaturation: spo2,
-      takenBy: takenBy,
+      recordedAt: recordedAt,
+      temperature: temperature,
+      pulse: pulse,
+      systolic: systolic,
+      diastolic: diastolic,
+      respiratoryRate: respiratoryRate,
+      oxygenSaturation: oxygenSaturation,
+      recordedBy: recordedBy,
     );
   }
 

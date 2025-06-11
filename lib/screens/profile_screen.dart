@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../state/user_provider.dart';
 import '../state/auth_provider.dart';
-import '../utils/image_utils.dart';
 import '../widgets/settings_section.dart';
+import '../widgets/profile_avatar.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -21,13 +21,11 @@ class ProfileScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(20),
           children: [
             Center(
-              child: CircleAvatar(
+              child: buildProfileAvatar(
+                context: context,
+                imageUrl: user.photoUrl,
+                fullName: user.fullName,
                 radius: 48,
-                backgroundColor: Colors.indigo,
-                backgroundImage: imageProviderFromPath(user.photoUrl) as ImageProvider<Object>?,
-                child: (user.photoUrl?.isEmpty ?? true)
-                    ? Text(user.initials, style: const TextStyle(fontSize: 32, color: Colors.white))
-                    : null,
               ),
             ),
             const SizedBox(height: 12),

@@ -24,19 +24,19 @@ class VitalsHistoryScreen extends ConsumerWidget {
             itemCount: vitalsList.length,
             itemBuilder: (_, i) {
               final v = vitalsList[i];
-              final time = '${v.timestamp.toLocal()}'.split('.').first;
+              final time = '${v.recordedAt.toLocal()}'.split('.').first;
               return ListTile(
                 title: Text(time),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Temp: ${v.temperature}°F'),
-                    Text('Pulse: ${v.heartRate} bpm'),
-                    Text('BP: ${v.systolic}/${v.diastolic} mmHg'),
-                    Text('Resp: ${v.respiratoryRate} bpm'),
-                    Text('O₂: ${v.oxygenSaturation}%'),
+                    Row(children:[Icon(Icons.thermostat, size: 16), SizedBox(width: 6), Text.rich(TextSpan(children:[TextSpan(text: 'Temp: ', style: TextStyle(fontWeight: FontWeight.bold)), TextSpan(text: '${v.temperature}°F')]))]),
+                    Row(children:[Icon(Icons.favorite, size: 16), SizedBox(width: 6), Text.rich(TextSpan(children:[TextSpan(text: 'Pulse: ', style: TextStyle(fontWeight: FontWeight.bold)), TextSpan(text: '${v.pulse} bpm')]))]),
+                    Row(children:[Icon(Icons.monitor_heart, size: 16), SizedBox(width: 6), Text.rich(TextSpan(children:[TextSpan(text: 'BP: ', style: TextStyle(fontWeight: FontWeight.bold)), TextSpan(text: '${v.systolic}/${v.diastolic} mmHg')]))]),
+                    Row(children:[Icon(Icons.air, size: 16), SizedBox(width: 6), Text.rich(TextSpan(children:[TextSpan(text: 'Resp: ', style: TextStyle(fontWeight: FontWeight.bold)), TextSpan(text: '${v.respiratoryRate} bpm')]))]),
+                    Row(children:[Icon(Icons.bubble_chart, size: 16), SizedBox(width: 6), Text.rich(TextSpan(children:[TextSpan(text: 'O₂: ', style: TextStyle(fontWeight: FontWeight.bold)), TextSpan(text: '${v.oxygenSaturation}%')]))]),
                     const SizedBox(height: 4),
-                    Text('- ${v.takenBy}', style: Theme.of(context).textTheme.labelSmall),
+                    Text('- ${v.recordedBy}', style: Theme.of(context).textTheme.labelSmall),
                   ],
                 ),
               );

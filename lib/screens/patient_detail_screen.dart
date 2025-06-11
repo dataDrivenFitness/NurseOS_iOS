@@ -1,14 +1,12 @@
-// Final version with only the centered vitals button row preserved and VitalsActionButtons removed
-
 import 'package:flutter/material.dart';
 import 'package:nurse_os/widgets/risk_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/patient_model.dart';
 import '../state/display_preferences_provider.dart';
-import '../utils/image_utils.dart';
-import 'package:nurse_os/extensions/risk_utils.dart';
 import '../widgets/vitals_interactive_section.dart';
 import '../widgets/care_plan_section.dart';
+import 'package:nurse_os/widgets/profile_avatar.dart';
+import 'package:nurse_os/extensions/risk_utils.dart';
 
 class PatientDetailScreen extends ConsumerWidget {
   final PatientModel patient;
@@ -18,20 +16,20 @@ class PatientDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prefs = ref.watch(displayPreferencesProvider);
-    final image = imageProviderFromPath(patient.photoUrl);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Patient Details')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Center(
-            child: CircleAvatar(
-              radius: 50,
-              backgroundImage: image,
-              backgroundColor: Colors.grey[200],
-            ),
+        Center(
+          child: buildProfileAvatar(
+            context: context,
+            imageUrl: patient.photoUrl,
+            fullName: '${patient.firstName} ${patient.lastName}',
+            radius: 50,
           ),
+        ),
           const SizedBox(height: 12),
           Center(
             child: Text(

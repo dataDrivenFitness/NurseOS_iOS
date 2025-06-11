@@ -24,10 +24,10 @@ class VitalsDashboardScreen extends ConsumerWidget {
         data: (vitalsList) {
           final filtered = vitalsList
               .where((v) =>
-                  v.timestamp.isAfter(range.start.subtract(const Duration(days: 1))) &&
-                  v.timestamp.isBefore(range.end.add(const Duration(days: 1))))
+                  v.recordedAt.isAfter(range.start.subtract(const Duration(days: 1))) &&
+                  v.recordedAt.isBefore(range.end.add(const Duration(days: 1))))
               .toList()
-            ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+            ..sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
 
           if (filtered.isEmpty) {
             return const Center(child: Text("No vitals in range"));
@@ -37,7 +37,7 @@ class VitalsDashboardScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             children: [
               _VitalsSparkline(title: 'Temperature (°F)', data: filtered.map((v) => v.temperature.toDouble()).toList()),
-              _VitalsSparkline(title: 'Pulse (bpm)', data: filtered.map((v) => v.heartRate.toDouble()).toList()),
+              _VitalsSparkline(title: 'Pulse (bpm)', data: filtered.map((v) => v.pulse.toDouble()).toList()),
               _VitalsSparkline(title: 'Systolic BP (mmHg)', data: filtered.map((v) => v.systolic.toDouble()).toList()),
               _VitalsSparkline(title: 'Diastolic BP (mmHg)', data: filtered.map((v) => v.diastolic.toDouble()).toList()),
               _VitalsSparkline(title: 'Respiration Rate (bpm)', data: filtered.map((v) => v.respiratoryRate.toDouble()).toList()),

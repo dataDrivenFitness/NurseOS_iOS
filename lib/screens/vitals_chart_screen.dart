@@ -21,7 +21,7 @@ class VitalsChartScreen extends ConsumerWidget {
             return const Center(child: Text("No data available"));
           }
 
-          final sorted = [...vitalsList]..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+          final sorted = [...vitalsList]..sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
 
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -32,7 +32,7 @@ class VitalsChartScreen extends ConsumerWidget {
               ),
               _VitalsLineChart(
                 title: 'Pulse (bpm)',
-                data: sorted.map((v) => v.heartRate.toDouble()).toList(),
+                data: sorted.map((v) => v.pulse.toDouble()).toList(),
               ),
               _VitalsLineChart(
                 title: 'Systolic BP (mmHg)',

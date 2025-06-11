@@ -29,23 +29,23 @@ class VitalsSummaryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                formatter.format(vitals.timestamp),
+                formatter.format(vitals.recordedAt),
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 6),
-              Text('Pulse: ${vitals.heartRate} bpm'),
+              Text('Pulse: ${vitals.pulse} bpm'),
               Text('BP: ${vitals.systolic}/${vitals.diastolic} mmHg'),
               Text('Temp: ${vitals.temperature.toStringAsFixed(1)} °F'),
-              Text('Resp: ${vitals.respiratoryRate} bpm'),
+              Text('RR: ${vitals.respiratoryRate} bpm'),
               Text('O₂: ${vitals.oxygenSaturation}%'),
               const SizedBox(height: 8),
               Text(
-                'Logged by: ${vitals.takenBy}',
+                'Logged by: ${vitals.recordedBy}',
                 style: Theme.of(context).textTheme.labelSmall,
               ),
               const SizedBox(height: 2),
               Text(
-                timeAgo(vitals.timestamp),
+                timeAgo(vitals.recordedAt),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
               ),
             ],

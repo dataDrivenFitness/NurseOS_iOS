@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../state/user_provider.dart';
 import '../models/user_model.dart';
+import '../widgets/profile_avatar.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -60,14 +61,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           Center(
             child: GestureDetector(
               onTap: () => _showPhotoSourceDialog(),
-              child: CircleAvatar(
+              child: buildProfileAvatar(
+                context: context,
+                imageUrl: user.photoUrl,
+                fullName: user.fullName,
                 radius: 45,
-                backgroundColor: theme.colorScheme.primary,
-                backgroundImage:
-                    _imageFile != null ? FileImage(_imageFile!) : (user.photoUrl != null ? FileImage(File(user.photoUrl!)) : null),
-                child: _imageFile == null && user.photoUrl == null
-                    ? const Icon(Icons.camera_alt, size: 30, color: Colors.white)
-                    : null,
               ),
             ),
           ),

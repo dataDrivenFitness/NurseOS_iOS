@@ -43,7 +43,7 @@ final mockPatients = [
     roomNumber: '403C',
     diagnosis: 'Sepsis',
     tags: ['pain management'],
-    photoUrl: '',
+    photoUrl: null, // No photo available
     pronouns: 'she/her',
     admittedAt: DateTime.now().subtract(const Duration(hours: 20)),
     assignedNurses: ['nurse_001'],

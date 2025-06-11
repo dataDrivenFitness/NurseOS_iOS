@@ -3,6 +3,7 @@ import 'package:nurse_os/models/patient_model.dart';
 import 'package:nurse_os/extensions/risk_utils.dart';
 import 'package:nurse_os/state/display_preferences_provider.dart';
 import 'package:nurse_os/extensions/patient_risk_extension.dart';
+import 'package:nurse_os/widgets/profile_avatar.dart';
 
 class PatientCardWidget extends StatelessWidget {
   final PatientModel patient;
@@ -18,7 +19,6 @@ class PatientCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Adjustable dimensions
     const double avatarRadius = 42.0;
     const double riskPillHeight = 20.0;
     const double riskPillPaddingH = 8.0;
@@ -42,13 +42,12 @@ class PatientCardWidget extends StatelessWidget {
               // Left: Profile + Risk
               Column(
                 children: [
-                  CircleAvatar(
-                    radius: avatarRadius,
-                    backgroundImage: patient.photoUrl != null
-                        ? NetworkImage(patient.photoUrl!)
-                        : null,
-                    backgroundColor: Colors.grey[300],
-                  ),
+                buildProfileAvatar(
+                  context: context,
+                  imageUrl: patient.photoUrl,
+                  fullName: '${patient.firstName} ${patient.lastName}',
+                  radius: avatarRadius,
+                ),
                   if (hasRisk)
                     Container(
                       margin: const EdgeInsets.only(top: 6),
@@ -79,7 +78,6 @@ class PatientCardWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Name + Pronouns
                     RichText(
                       text: TextSpan(
                         text: '${patient.firstName} ${patient.lastName} ',
@@ -98,7 +96,6 @@ class PatientCardWidget extends StatelessWidget {
                             : [],
                       ),
                     ),
-
                     const SizedBox(height: 4),
                     if (prefs.showDiagnosis && patient.diagnosis != null)
                       RichText(
@@ -145,8 +142,6 @@ class PatientCardWidget extends StatelessWidget {
                           ],
                         ),
                       ),
-
-                    // Tags row
                     if (prefs.showTags && patient.tags != null && patient.tags!.isNotEmpty) ...[
                       const SizedBox(height: 8),
                       Wrap(

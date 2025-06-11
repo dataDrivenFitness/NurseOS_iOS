@@ -18,7 +18,7 @@ class _VitalsEntryScreenState extends ConsumerState<VitalsEntryScreen> {
   final _uuid = const Uuid();
 
   double? temperature;
-  int? heartRate;
+  int? pulse;
   int? systolic;
   int? diastolic;
   int? respiratoryRate;
@@ -29,12 +29,12 @@ class _VitalsEntryScreenState extends ConsumerState<VitalsEntryScreen> {
       _formKey.currentState!.save();
 
       final vitals = VitalsModel(
-        id: _uuid.v4(),
+        uid: _uuid.v4(),
         patientId: widget.patientId,
-        takenBy: 'nurse_001', // Mock nurse ID
-        timestamp: DateTime.now(),
+        recordedBy: 'nurse_001', // Mock nurse ID
+        recordedAt: DateTime.now(),
         temperature: temperature!,
-        heartRate: heartRate!,
+        pulse: pulse!,
         systolic: systolic!,
         diastolic: diastolic!,
         respiratoryRate: respiratoryRate!,
@@ -57,7 +57,7 @@ class _VitalsEntryScreenState extends ConsumerState<VitalsEntryScreen> {
           child: ListView(
             children: [
               _buildNumberField("Temperature (°F)", (val) => temperature = double.tryParse(val ?? '')),
-              _buildNumberField("Pulse (bpm)", (val) => heartRate = int.tryParse(val ?? '')),
+              _buildNumberField("Pulse (bpm)", (val) => pulse = int.tryParse(val ?? '')),
               _buildNumberField("Systolic BP", (val) => systolic = int.tryParse(val ?? '')),
               _buildNumberField("Diastolic BP", (val) => diastolic = int.tryParse(val ?? '')),
               _buildNumberField("Respiration Rate", (val) => respiratoryRate = int.tryParse(val ?? '')),

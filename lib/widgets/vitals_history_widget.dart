@@ -1,6 +1,6 @@
 
 // Updated to include vitals trend indicators
-// Example: ↑ if heartRate is higher than previous, ↓ if lower
+// Example: ↑ if pulse is higher than previous, ↓ if lower
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,7 +47,7 @@ class VitalsHistoryWidget extends ConsumerWidget {
   }
 
   Widget _buildVitalsCard(BuildContext context, VitalsModel vitals, {required String label, VitalsModel? previous}) {
-    final timeString = timeago.format(vitals.timestamp, allowFromNow: true);
+    final timeString = timeago.format(vitals.recordedAt, allowFromNow: true);
 
     String trendIcon(num current, num? prev) {
       if (prev == null) return '';
@@ -62,7 +62,7 @@ class VitalsHistoryWidget extends ConsumerWidget {
           children: [
             Text(label, style: Theme.of(context).textTheme.labelMedium),
             Text('Temp: ${vitals.temperature} °F ${trendIcon(vitals.temperature, previous?.temperature)}'),
-            Text('Pulse: ${vitals.heartRate} bpm ${trendIcon(vitals.heartRate, previous?.heartRate)}'),
+            Text('Pulse: ${vitals.pulse} bpm ${trendIcon(vitals.pulse, previous?.pulse)}'),
             Text('BP: ${vitals.systolicBP}/${vitals.diastolicBP} mmHg'),
             Text('RR: ${vitals.respiratoryRate} ${trendIcon(vitals.respiratoryRate, previous?.respiratoryRate)}'),
             Text('SpO₂: ${vitals.oxygenSaturation}% ${trendIcon(vitals.oxygenSaturation, previous?.oxygenSaturation)}'),
