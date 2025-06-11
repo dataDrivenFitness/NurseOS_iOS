@@ -1,4 +1,4 @@
-import '../models/patient_model.dart';
+import 'package:nurse_os/models/patient_model.dart';
 
 class FakePatientService {
   Future<List<PatientModel>> fetchPatients() async {

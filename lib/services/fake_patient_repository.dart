@@ -1,16 +1,35 @@
-import 'package:nurse_os/models/patient_model.dart';
-import 'package:nurse_os/services/patient_repository.dart';
+import '../models/patient_model.dart';
+import 'package:flutter/foundation.dart';
 
-class FakePatientRepository implements PatientRepository {
+class FakePatientRepository extends ChangeNotifier {
   final List<PatientModel> _patients;
 
-  FakePatientRepository({required List<PatientModel> patients})
-      : _patients = patients;
+  FakePatientRepository({List<PatientModel>? patients})
+      : _patients = patients ?? [];
 
-  @override
-  Future<List<PatientModel>> getAllPatients() async {
-    // Simulate delay if desired
-    await Future.delayed(const Duration(milliseconds: 200));
-    return _patients;
+  List<PatientModel> get patients => List.unmodifiable(_patients);
+
+  void addPatient(PatientModel patient) {
+    _patients.add(patient);
+    notifyListeners();
+  }
+
+  void updatePatient(PatientModel updated) {
+    final index = _patients.indexWhere((p) => p.id == updated.id);
+    if (index != -1) {
+      _patients[index] = updated;
+      notifyListeners();
+    }
+  }
+
+  void deletePatient(String id) {
+    _patients.removeWhere((p) => p.id == id);
+    notifyListeners();
+  }
+
+  Future<void> refresh() async {
+    // In a real implementation, this might fetch from a backend
+    await Future.delayed(const Duration(milliseconds: 300));
+    notifyListeners();
   }
 }

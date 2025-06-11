@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'state/theme_provider.dart';
 import 'state/patient_provider.dart';
-import 'services/mock_patient_data.dart';
+import 'mock_data/mock_patient_data.dart';
 
 import 'screens/login_screen.dart';
 import 'screens/edit_profile_screen.dart';
@@ -20,8 +20,8 @@ void main() {
   runApp(
     ProviderScope(
       overrides: [
-        patientRepositoryProvider.overrideWithValue(
-          FakePatientRepository(patients: mockPatients),
+        patientRepositoryProvider.overrideWith(
+          (ref) => FakePatientRepository(patients: mockPatients),
         ),
       ],
       child: const NurseOSApp(),

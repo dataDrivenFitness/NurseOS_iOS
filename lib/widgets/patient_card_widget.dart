@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nurse_os/models/patient_model.dart';
 import 'package:nurse_os/utils/risk_utils.dart';
 import 'package:nurse_os/state/display_preferences_provider.dart';
+import 'package:nurse_os/extensions/patient_risk_extension.dart';
 
 class PatientCardWidget extends StatelessWidget {
   final PatientModel patient;
@@ -22,8 +23,11 @@ class PatientCardWidget extends StatelessWidget {
     const double riskPillHeight = 20.0;
     const double riskPillPaddingH = 8.0;
 
+    final risk = patient.resolvedRiskLevel;
     final hasRisk = prefs.showHighRiskAlerts &&
-        (patient.riskLevel == RiskLevel.high || patient.riskLevel == RiskLevel.medium);
+        (risk == RiskLevel.high || risk == RiskLevel.medium);
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: onTap,
@@ -53,11 +57,11 @@ class PatientCardWidget extends StatelessWidget {
                         vertical: (riskPillHeight - 10) / 2,
                       ),
                       decoration: BoxDecoration(
-                        color: patient.riskLevel == RiskLevel.high ? Colors.red : Colors.orange,
+                        color: risk == RiskLevel.high ? Colors.red : Colors.orange,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        '${patient.riskLevel!.name.toUpperCase()} RISK',
+                        '${risk.name.toUpperCase()} RISK',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 10,
@@ -153,16 +157,20 @@ class PatientCardWidget extends StatelessWidget {
                               (tag) => Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: Colors.blueGrey[50],
-                                  border: Border.all(color: Colors.blueGrey.shade300),
+                                  color: isDark ? Colors.grey[800] : Colors.blueGrey[50],
+                                  border: Border.all(
+                                    color: isDark
+                                        ? Colors.grey.shade600
+                                        : Colors.blueGrey.shade300,
+                                  ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
                                   tag,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.black87,
+                                    color: isDark ? Colors.white : Colors.black87,
                                   ),
                                 ),
                               ),

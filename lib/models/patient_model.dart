@@ -15,6 +15,8 @@ class PatientModel {
   final DateTime? admittedAt;
   final List<String>? assignedNurses; // 🆕 NEW FIELD
   final String? ownerUid;              // 🆕 OPTIONAL (Phase 4)
+  final RiskLevel? manualRiskOverride; // <— ADD THIS
+  final String? createdBy; // <— ADD THIS if needed separately
 
   PatientModel({
     required this.id,
@@ -30,6 +32,8 @@ class PatientModel {
     this.admittedAt,
     this.assignedNurses,  // include in constructor
     this.ownerUid,
+    this.manualRiskOverride, // <— ADD TO CONSTRUCTOR
+    this.createdBy, // <— Optional
   });
 
   Map<String, dynamic> toMap() {
@@ -47,6 +51,8 @@ class PatientModel {
       'admittedAt': admittedAt?.toIso8601String(),
       'assignedNurses': assignedNurses, // persist
       'ownerUid': ownerUid,
+      'manualRiskOverride': manualRiskOverride?.name,
+      'createdBy': createdBy,
     };
   }
 
@@ -71,6 +77,11 @@ class PatientModel {
           ? List<String>.from(map['assignedNurses'])
           : null,
       ownerUid: map['ownerUid'],
+      manualRiskOverride: map['manualRiskOverride'] != null
+    ? RiskLevel.values.byName(map['manualRiskOverride'])
+    : null,
+createdBy: map['createdBy'],
+
     );
   }
 }
