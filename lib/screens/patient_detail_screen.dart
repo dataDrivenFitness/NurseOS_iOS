@@ -7,29 +7,37 @@ import '../widgets/vitals_interactive_section.dart';
 import '../widgets/care_plan_section.dart';
 import 'package:nurse_os/widgets/profile_avatar.dart';
 import 'package:nurse_os/extensions/risk_utils.dart';
+import 'package:nurse_os/widgets/error_banner.dart';
+import '../state/vitals_provider.dart';
 
+/// PatientDetailScreen renders the detailed profile view for a selected patient.
+/// Includes profile info, vitals display with error handling, and care plan section.
 class PatientDetailScreen extends ConsumerWidget {
+  /// The patient whose details are being displayed
   final PatientModel patient;
 
   const PatientDetailScreen({super.key, required this.patient});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Fetch user-specific display preferences (e.g. what fields to show)
     final prefs = ref.watch(displayPreferencesProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Patient Details')),
+      // Main scrollable content area
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-        Center(
-          child: buildProfileAvatar(
-            context: context,
-            imageUrl: patient.photoUrl,
-            fullName: '${patient.firstName} ${patient.lastName}',
-            radius: 50,
+          // Patient profile photo and name
+          Center(
+            child: buildProfileAvatar(
+              context: context,
+              imageUrl: patient.photoUrl,
+              fullName: '${patient.firstName} ${patient.lastName}',
+              radius: 50,
+            ),
           ),
-        ),
           const SizedBox(height: 12),
           Center(
             child: Text(
@@ -38,11 +46,15 @@ class PatientDetailScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
+
+          // Conditionally show patient demographics
           if (prefs.showAge) Text('Age: ${patient.age}'),
           if (prefs.showPreferredPronouns && patient.pronouns != null)
             Text('Pronouns: ${patient.pronouns}'),
           if (prefs.showRoomNumber) Text('Room: ${patient.roomNumber}'),
           if (prefs.showDiagnosis) Text('Diagnosis: ${patient.diagnosis}'),
+
+          // Conditional risk badge
           if ((prefs.showHighRiskAlerts &&
               (patient.riskLevel == RiskLevel.medium || patient.riskLevel == RiskLevel.high)))
             Container(
@@ -58,13 +70,25 @@ class PatientDetailScreen extends ConsumerWidget {
               ),
             ),
 
+          // Optional patient tags
           if (prefs.showTags && patient.tags != null && patient.tags!.isNotEmpty)
             RiskTagRow(tags: patient.tags!),
 
           const Divider(height: 32),
-          VitalsInteractiveSection(patientId: patient.id),
+
+          // Load vitals using Riverpod provider, with error-safe wrapper
+          ref.watch(vitalsProvider(patient.id)).when(
+            data: (vitals) => VitalsInteractiveSection(patientId: patient.id),
+            loading: () => const CircularProgressIndicator(),
+            error: (e, _) => ErrorBanner(
+              message: 'Unable to load vitals.',
+              onRetry: () => ref.refresh(vitalsProvider(patient.id)),
+            ),
+          ),
+
           const SizedBox(height: 16),
 
+          // Vitals action buttons
           Center(
             child: Wrap(
               alignment: WrapAlignment.center,
@@ -90,6 +114,8 @@ class PatientDetailScreen extends ConsumerWidget {
           ),
 
           const SizedBox(height: 24),
+
+          // Static care plan section (no error wrapper yet)
           CarePlanSection(patientId: patient.id),
         ],
       ),
