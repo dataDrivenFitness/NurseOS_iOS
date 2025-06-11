@@ -17,6 +17,11 @@ class PatientCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Adjustable dimensions
+    const double avatarRadius = 36.0;
+    const double riskPillHeight = 20.0;
+    const double riskPillPaddingH = 8.0;
+
     final hasRisk = prefs.showHighRiskAlerts &&
         (patient.riskLevel == RiskLevel.high || patient.riskLevel == RiskLevel.medium);
 
@@ -34,15 +39,19 @@ class PatientCardWidget extends StatelessWidget {
               Column(
                 children: [
                   CircleAvatar(
-                    radius: 30,
-                    backgroundImage:
-                        patient.photoUrl != null ? NetworkImage(patient.photoUrl!) : null,
+                    radius: avatarRadius,
+                    backgroundImage: patient.photoUrl != null
+                        ? NetworkImage(patient.photoUrl!)
+                        : null,
                     backgroundColor: Colors.grey[300],
                   ),
                   if (hasRisk)
                     Container(
                       margin: const EdgeInsets.only(top: 6),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: riskPillPaddingH,
+                        vertical: (riskPillHeight - 10) / 2,
+                      ),
                       decoration: BoxDecoration(
                         color: patient.riskLevel == RiskLevel.high ? Colors.red : Colors.orange,
                         borderRadius: BorderRadius.circular(20),
@@ -53,6 +62,7 @@ class PatientCardWidget extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
+                          height: 1.0,
                         ),
                       ),
                     ),
@@ -77,8 +87,6 @@ class PatientCardWidget extends StatelessWidget {
                                 TextSpan(
                                   text: '(${patient.pronouns})',
                                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                        color: Colors.grey[600],
-                                        fontStyle: FontStyle.italic,
                                         fontWeight: FontWeight.normal,
                                       ),
                                 )
@@ -92,7 +100,9 @@ class PatientCardWidget extends StatelessWidget {
                       RichText(
                         text: TextSpan(
                           text: 'Diagnosis: ',
-                          style: DefaultTextStyle.of(context).style.copyWith(fontWeight: FontWeight.bold),
+                          style: DefaultTextStyle.of(context)
+                              .style
+                              .copyWith(fontWeight: FontWeight.bold),
                           children: [
                             TextSpan(
                               text: patient.diagnosis!,
@@ -105,7 +115,9 @@ class PatientCardWidget extends StatelessWidget {
                       RichText(
                         text: TextSpan(
                           text: 'Age: ',
-                          style: DefaultTextStyle.of(context).style.copyWith(fontWeight: FontWeight.bold),
+                          style: DefaultTextStyle.of(context)
+                              .style
+                              .copyWith(fontWeight: FontWeight.bold),
                           children: [
                             TextSpan(
                               text: '${patient.age}',
@@ -118,7 +130,9 @@ class PatientCardWidget extends StatelessWidget {
                       RichText(
                         text: TextSpan(
                           text: 'Room: ',
-                          style: DefaultTextStyle.of(context).style.copyWith(fontWeight: FontWeight.bold),
+                          style: DefaultTextStyle.of(context)
+                              .style
+                              .copyWith(fontWeight: FontWeight.bold),
                           children: [
                             TextSpan(
                               text: patient.roomNumber!,

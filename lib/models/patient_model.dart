@@ -13,6 +13,8 @@ class PatientModel {
   final String? photoUrl;
   final String? pronouns;
   final DateTime? admittedAt;
+  final List<String>? assignedNurses; // 🆕 NEW FIELD
+  final String? ownerUid;              // 🆕 OPTIONAL (Phase 4)
 
   PatientModel({
     required this.id,
@@ -26,6 +28,8 @@ class PatientModel {
     this.photoUrl,
     this.pronouns,
     this.admittedAt,
+    this.assignedNurses,  // include in constructor
+    this.ownerUid,
   });
 
   Map<String, dynamic> toMap() {
@@ -41,6 +45,8 @@ class PatientModel {
       'photoUrl': photoUrl,
       'pronouns': pronouns,
       'admittedAt': admittedAt?.toIso8601String(),
+      'assignedNurses': assignedNurses, // persist
+      'ownerUid': ownerUid,
     };
   }
 
@@ -61,6 +67,10 @@ class PatientModel {
       admittedAt: map['admittedAt'] != null
           ? DateTime.parse(map['admittedAt'])
           : null,
+      assignedNurses: map['assignedNurses'] != null
+          ? List<String>.from(map['assignedNurses'])
+          : null,
+      ownerUid: map['ownerUid'],
     );
   }
 }

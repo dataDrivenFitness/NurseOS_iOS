@@ -1,0 +1,88 @@
+
+import 'package:nurse_os/models/patient_model.dart';
+import 'package:nurse_os/utils/risk_utils.dart';
+import 'package:nurse_os/mock_data/mock_patient_nurse_metadata_service.dart';
+
+final mockPatients = [
+  PatientModel(
+    id: 'patient_001',
+    firstName: 'Ava',
+    lastName: 'Rodriguez',
+    age: 72,
+    roomNumber: '401B',
+    diagnosis: 'CHF Exacerbation',
+    riskLevel: RiskLevel.high,
+    tags: ['fall risk', 'daily weights'],
+    photoUrl: 'https://i.pravatar.cc/150?img=1',
+    pronouns: 'she/her',
+    admittedAt: DateTime.now().subtract(const Duration(hours: 2)),
+    assignedNurses: ['nurse_001'],
+    ownerUid: 'nurse_001',
+  ),
+  PatientModel(
+    id: 'patient_002',
+    firstName: 'Leo',
+    lastName: 'Chen',
+    age: 56,
+    roomNumber: '402A',
+    diagnosis: 'Pneumonia',
+    riskLevel: RiskLevel.high,
+    tags: ['oxygen', 'telemetry'],
+    photoUrl: 'https://i.pravatar.cc/150?img=2',
+    pronouns: 'he/him',
+    admittedAt: DateTime.now().subtract(const Duration(days: 2)),
+    assignedNurses: ['nurse_001', 'nurse_002'],
+    ownerUid: 'nurse_002',
+  ),
+  PatientModel(
+    id: 'patient_003',
+    firstName: 'Maya',
+    lastName: 'Singh',
+    age: 65,
+    roomNumber: '403C',
+    diagnosis: 'Post-op Recovery',
+    riskLevel: RiskLevel.low,
+    tags: ['pain management'],
+    photoUrl: 'https://i.pravatar.cc/150?img=3',
+    pronouns: 'she/her',
+    admittedAt: DateTime.now().subtract(const Duration(hours: 20)),
+    assignedNurses: ['nurse_001'],
+    ownerUid: 'nurse_001',
+  ),
+  PatientModel(
+    id: 'patient_004',
+    firstName: 'Jamal',
+    lastName: 'Brown',
+    age: 70,
+    roomNumber: '404D',
+    diagnosis: 'Asthma',
+    riskLevel: RiskLevel.low,
+    tags: ['no latex'],
+    photoUrl: 'https://i.pravatar.cc/150?img=4',
+    pronouns: 'he/him',
+    admittedAt: DateTime.now().subtract(const Duration(days: 1, hours: 3)),
+    assignedNurses: ['nurse_003'],
+    ownerUid: 'nurse_003',
+  ),
+  PatientModel(
+    id: 'patient_005',
+    firstName: 'Lina',
+    lastName: 'Garcia',
+    age: 60,
+    roomNumber: '405A',
+    diagnosis: 'Diabetes',
+    riskLevel: RiskLevel.medium,
+    tags: ['foot checks'],
+    photoUrl: 'https://i.pravatar.cc/150?img=5',
+    pronouns: 'they/them',
+    admittedAt: DateTime.now().subtract(const Duration(days: 3)),
+    assignedNurses: ['nurse_001'],
+    ownerUid: 'nurse_001',
+  ),
+];
+
+void markPatientsSeenFor(String nurseId) {
+  for (final patient in mockPatients) {
+    MockPatientNurseMetadataService.markSeenOnce(patient.id, nurseId);
+  }
+}

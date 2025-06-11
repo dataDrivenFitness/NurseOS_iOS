@@ -38,5 +38,4 @@ flutter:
         - asset: assets/fonts/InterVariable.ttf
 
   assets:
-    - assets/images/
     - assets/fonts/
