@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nurse_os/utils/risk_utils.dart';
+import 'package:nurse_os/extensions/risk_utils.dart';
 
 class FirstNameField extends StatelessWidget {
   final FormFieldSetter<String> onSaved;

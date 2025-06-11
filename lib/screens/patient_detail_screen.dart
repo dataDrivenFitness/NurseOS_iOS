@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/patient_model.dart';
 import '../state/display_preferences_provider.dart';
 import '../utils/image_utils.dart';
-import 'package:nurse_os/utils/risk_utils.dart';
+import 'package:nurse_os/extensions/risk_utils.dart';
 import '../widgets/vitals_interactive_section.dart';
 import '../widgets/care_plan_section.dart';
 

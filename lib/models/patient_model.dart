@@ -1,5 +1,5 @@
 
-import 'package:nurse_os/utils/risk_utils.dart' show RiskLevel;
+import 'package:nurse_os/extensions/risk_utils.dart' show RiskLevel;
 
 class PatientModel {
   final String id;

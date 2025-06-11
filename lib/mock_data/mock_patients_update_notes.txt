@@ -1,0 +1,18 @@
+// Suggested updates for mock_patients.dart
+
+// 1. Import mock_constants.dart:
+import 'mock_constants.dart';
+
+// 2. Replace hardcoded UIDs:
+PatientModel(
+  uid: mockPatientLiamId,
+  assignedNurses: [mockNurseAnaId],
+  ...
+);
+
+// 3. Optionally import and use scenario builder for consistency:
+import '../test_utils/mock_scenario_builder.dart';
+
+final mockPatients = [
+  MockScenarioBuilder.stablePatient(uid: mockPatientLiamId),
+];

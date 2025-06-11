@@ -1,13 +1,26 @@
 import '../models/patient_model.dart';
+import '../repositories/patient_repository.dart';
 import 'package:flutter/foundation.dart';
 
-class FakePatientRepository extends ChangeNotifier {
+class FakePatientRepository extends ChangeNotifier implements PatientRepository {
   final List<PatientModel> _patients;
 
   FakePatientRepository({List<PatientModel>? patients})
       : _patients = patients ?? [];
 
   List<PatientModel> get patients => List.unmodifiable(_patients);
+
+  @override
+  Future<List<PatientModel>> getAllPatients() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return _patients;
+  }
+
+  @override
+  Future<PatientModel?> getPatientById(String id) async {
+    await Future.delayed(const Duration(milliseconds: 150));
+    return _patients.firstWhere((p) => p.id == id, orElse: () => null as PatientModel);
+  }
 
   void addPatient(PatientModel patient) {
     _patients.add(patient);
@@ -28,8 +41,6 @@ class FakePatientRepository extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
-    // In a real implementation, this might fetch from a backend
-    await Future.delayed(const Duration(milliseconds: 300));
     notifyListeners();
   }
 }

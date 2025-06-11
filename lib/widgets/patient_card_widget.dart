@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nurse_os/models/patient_model.dart';
-import 'package:nurse_os/utils/risk_utils.dart';
+import 'package:nurse_os/extensions/risk_utils.dart';
 import 'package:nurse_os/state/display_preferences_provider.dart';
 import 'package:nurse_os/extensions/patient_risk_extension.dart';
 
@@ -19,7 +19,7 @@ class PatientCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Adjustable dimensions
-    const double avatarRadius = 36.0;
+    const double avatarRadius = 42.0;
     const double riskPillHeight = 20.0;
     const double riskPillPaddingH = 8.0;
 

@@ -19,14 +19,8 @@ class PatientListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Patient List'),
+        centerTitle: true,
         actions: [
-          CupertinoButton(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: const Icon(CupertinoIcons.arrow_2_circlepath),
-            onPressed: () async {
-              await ref.read(patientRepositoryProvider).refresh();
-            },
-          ),
           CupertinoButton(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: const Icon(CupertinoIcons.add_circled),

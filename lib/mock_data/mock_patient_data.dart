@@ -1,5 +1,5 @@
 import 'package:nurse_os/models/patient_model.dart';
-import 'package:nurse_os/utils/risk_utils.dart';
+import 'package:nurse_os/extensions/risk_utils.dart';
 import 'package:nurse_os/mock_data/mock_patient_nurse_metadata_service.dart';
 
 final mockPatients = [
