@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nurse_os/models/patient_model.dart';
 import 'package:nurse_os/extensions/risk_utils.dart';
 import 'package:nurse_os/widgets/form_fields/patient_form_fields.dart';
-import 'package:nurse_os/services/fake_patient_repository.dart';
+import 'package:nurse_os/services/in_memory_patient_repository.dart';
 import 'package:nurse_os/state/patient_provider.dart';
 
 class AddPatientScreen extends ConsumerStatefulWidget {

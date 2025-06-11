@@ -1,19 +1,37 @@
-# 🔧 /services/
+# 🛠️ Services Layer
 
-Contains mock services for simulating backend behavior.
+This folder contains all the service and repository implementations responsible for fetching, storing, and updating app data.
 
-## 📦 Rules
-- Async methods with fake delay
-- No UI or Riverpod imports
-- Include `simulateError` toggles for testing error states
-- Only uses mock data and models
+---
 
-## 📚 Common Files
-- `mock_patient_service.dart`
-- `mock_vitals_service.dart`
-- `mock_note_service.dart`
-- `mock_auth_service.dart`
+## 📄 Key Files
 
-## 🔁 Depends On
-- /models/
-- /mock_data/
+### `in_memory_patient_repository.dart`
+- Implements `PatientRepository`
+- Local-only storage of `PatientModel` for mock/test environments
+- Can be swapped out with `FirebasePatientRepository` in Phase 5
+
+### `fake_shift_note_service.dart`, `fake_vitals_service.dart`
+- Provide mock implementations for GPT output and vital readings
+- Used to simulate backend behavior in mock-first builds
+
+---
+
+## 🔄 Transition Plan
+
+In the future (Phase 5+), you'll replace these files with:
+- `firebase_patient_repository.dart`
+- `firebase_shift_note_service.dart`
+
+---
+
+## 🧠 Architecture Note
+
+Each service implements a clean, abstract interface (like `PatientRepository`) and can be easily swapped via providers or flags.
+
+---
+
+## ✅ Best Practice
+
+- Use `in_memory_*` naming for test/dummy implementations
+- Avoid "fake_" or "mock_" in core architecture to simplify transitions

@@ -11,7 +11,7 @@ import 'screens/vitals_entry_screen.dart';
 import 'screens/vitals_history_screen.dart';
 import 'screens/vitals_chart_screen.dart';
 import 'screens/vitals_dashboard_screen.dart';
-import 'services/fake_patient_repository.dart';
+import 'services/in_memory_patient_repository.dart';
 
 
 import 'themes/typography.dart';
@@ -21,7 +21,7 @@ void main() {
     ProviderScope(
       overrides: [
         patientRepositoryProvider.overrideWith(
-          (ref) => FakePatientRepository(patients: mockPatients),
+          (ref) => InMemoryPatientRepository(patients: mockPatients),
         ),
       ],
       child: const NurseOSApp(),

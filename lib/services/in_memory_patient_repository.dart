@@ -2,10 +2,10 @@ import '../models/patient_model.dart';
 import '../repositories/patient_repository.dart';
 import 'package:flutter/foundation.dart';
 
-class FakePatientRepository extends ChangeNotifier implements PatientRepository {
+class InMemoryPatientRepository extends ChangeNotifier implements PatientRepository {
   final List<PatientModel> _patients;
 
-  FakePatientRepository({List<PatientModel>? patients})
+  InMemoryPatientRepository({List<PatientModel>? patients})
       : _patients = patients ?? [];
 
   List<PatientModel> get patients => List.unmodifiable(_patients);

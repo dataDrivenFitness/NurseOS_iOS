@@ -3,10 +3,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/patient_model.dart';
 import '../repositories/patient_repository.dart';
-import '../services/fake_patient_repository.dart';
+import '../services/in_memory_patient_repository.dart';
 
 final patientRepositoryProvider = Provider<PatientRepository>((ref) {
-  return FakePatientRepository(); // Will swap for Firebase later
+  return InMemoryPatientRepository(); // Will swap for Firebase later
 });
 
 final patientDetailProvider = FutureProvider.family<PatientModel, String>((ref, patientId) async {

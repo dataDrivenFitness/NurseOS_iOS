@@ -24,19 +24,19 @@ class VitalsHistoryScreen extends ConsumerWidget {
             itemCount: vitalsList.length,
             itemBuilder: (_, i) {
               final v = vitalsList[i];
-              final time = '${v.recordedAt.toLocal()}'.split('.').first;
+              final time = '${v.timestamp.toLocal()}'.split('.').first;
               return ListTile(
                 title: Text(time),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Temp: ${v.temperature}°F'),
-                    Text('Pulse: ${v.pulse} bpm'),
+                    Text('Pulse: ${v.heartRate} bpm'),
                     Text('BP: ${v.systolic}/${v.diastolic} mmHg'),
-                    Text('Resp: ${v.respirationRate} bpm'),
+                    Text('Resp: ${v.respiratoryRate} bpm'),
                     Text('O₂: ${v.oxygenSaturation}%'),
                     const SizedBox(height: 4),
-                    Text('- ${v.recordedBy}', style: Theme.of(context).textTheme.labelSmall),
+                    Text('- ${v.takenBy}', style: Theme.of(context).textTheme.labelSmall),
                   ],
                 ),
               );

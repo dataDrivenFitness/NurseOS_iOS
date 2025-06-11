@@ -16,7 +16,7 @@ class MockScenarioBuilder {
           patientId: uid,
           timestamp: DateTime.now().subtract(Duration(hours: 2)),
           bp: "120/80",
-          pulse: 72,
+          heartRate: 72,
         )
       ],
       sentimentNotes: [

@@ -1,51 +1,55 @@
 class VitalsModel {
   final String id;
   final String patientId;
-  final DateTime recordedAt;
-  final String recordedBy;
-  final int pulse;
+  final DateTime timestamp;
+  final double temperature;
+  final int heartRate;
   final int systolic;
   final int diastolic;
-  final double temperature;
-  final int respirationRate;
+  final int respiratoryRate;
   final int oxygenSaturation;
+  final String takenBy;
 
   VitalsModel({
     required this.id,
     required this.patientId,
-    required this.recordedAt,
-    required this.recordedBy,
-    required this.pulse,
+    required this.timestamp,
+    required this.temperature,
+    required this.heartRate,
     required this.systolic,
     required this.diastolic,
-    required this.temperature,
-    required this.respirationRate,
+    required this.respiratoryRate,
     required this.oxygenSaturation,
+    required this.takenBy,
   });
 
-  VitalsModel copyWith({
-    String? id,
-    String? patientId,
-    DateTime? recordedAt,
-    String? recordedBy,
-    int? pulse,
-    int? systolic,
-    int? diastolic,
-    double? temperature,
-    int? respirationRate,
-    int? oxygenSaturation,
-  }) {
+  factory VitalsModel.fromJson(Map<String, dynamic> json) {
     return VitalsModel(
-      id: id ?? this.id,
-      patientId: patientId ?? this.patientId,
-      recordedAt: recordedAt ?? this.recordedAt,
-      recordedBy: recordedBy ?? this.recordedBy,
-      pulse: pulse ?? this.pulse,
-      systolic: systolic ?? this.systolic,
-      diastolic: diastolic ?? this.diastolic,
-      temperature: temperature ?? this.temperature,
-      respirationRate: respirationRate ?? this.respirationRate,
-      oxygenSaturation: oxygenSaturation ?? this.oxygenSaturation,
+      id: json['id'],
+      patientId: json['patientId'],
+      timestamp: DateTime.parse(json['timestamp']),
+      temperature: json['temperature'],
+      heartRate: json['heartRate'],
+      systolic: json['systolic'],
+      diastolic: json['diastolic'],
+      respiratoryRate: json['respiratoryRate'],
+      oxygenSaturation: json['oxygenSaturation'],
+      takenBy: json['takenBy'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'patientId': patientId,
+      'timestamp': timestamp.toIso8601String(),
+      'temperature': temperature,
+      'heartRate': heartRate,
+      'systolic': systolic,
+      'diastolic': diastolic,
+      'respiratoryRate': respiratoryRate,
+      'oxygenSaturation': oxygenSaturation,
+      'takenBy': takenBy,
+    };
   }
 }
