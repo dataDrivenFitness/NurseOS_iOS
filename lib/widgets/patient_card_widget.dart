@@ -1,17 +1,16 @@
-// START GPT MOD
-// Refactored full PatientCardWidget with restored layout, updated field name (location), and risk pill below avatar
 import 'package:flutter/material.dart';
-import 'package:nurse_os/models/patient_model.dart';
-import 'package:nurse_os/extensions/risk_utils.dart';
-import 'package:nurse_os/state/display_preferences_provider.dart';
-import 'package:nurse_os/extensions/patient_risk_extension.dart';
-import 'package:nurse_os/widgets/profile_avatar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/patient_model.dart';
+import '../state/display_preferences_provider.dart';
+import '../ui/style.dart';               // ← design tokens
+import 'nurse_pill.dart';
+import 'nurse_icon_button.dart';
 
-class PatientCardWidget extends StatelessWidget {
-  final PatientModel patient;
-  final DisplayPreferences prefs;
-  final VoidCallback? onTap;
-
+/// Card that shows a patient avatar, name, risk pill and optional “NEW” tag.
+/// Taps navigate to Patient Detail.
+///
+/// All spacing / colours come from design tokens (Guidelines §3).
+class PatientCardWidget extends ConsumerWidget {
   const PatientCardWidget({
     super.key,
     required this.patient,
@@ -19,169 +18,90 @@ class PatientCardWidget extends StatelessWidget {
     this.onTap,
   });
 
+  final PatientModel patient;
+  final DisplayPreferences prefs;
+  final VoidCallback? onTap;
+
   @override
-  Widget build(BuildContext context) {
-    const double avatarRadius = 42.0;
-    const double riskPillHeight = 20.0;
-    const double riskPillPaddingH = 8.0;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = Theme.of(context).extension<AppTheme>()!; // quick token shortcut
 
-    final risk = patient.resolvedRiskLevel;
-    final hasRisk = risk == RiskLevel.high || risk == RiskLevel.medium;
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(Radii.card),
       onTap: onTap,
-      child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Left: Profile + Risk
-              Column(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: Spacing.sm),
+        padding: const EdgeInsets.all(Spacing.lg),
+        decoration: BoxDecoration(
+          color: t.surface,
+          borderRadius: BorderRadius.circular(Radii.card),
+        ),
+        child: Row(
+          children: [
+            /* ------------------ Avatar ------------------ */
+            CircleAvatar(
+              radius: Radii.avatar,
+              backgroundColor: Colors.blueGrey.withOpacity(.3),
+              foregroundImage: patient.photoUrl?.isNotEmpty == true
+                  ? NetworkImage(patient.photoUrl!)
+                  : null,
+              child: (patient.photoUrl?.isEmpty ?? true)
+                  ? Text(
+                      '${patient.firstName[0]}${patient.lastName[0]}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  : null,
+            ),
+            const SizedBox(width: Spacing.lg),
+
+            /* ------------- Name + pills column ------------- */
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  buildProfileAvatar(
-                    context: context,
-                    imageUrl: patient.photoUrl,
-                    fullName: '${patient.firstName} ${patient.lastName}',
-                    radius: avatarRadius,
-                  ),
-                  if (hasRisk)
-                    Container(
-                      margin: const EdgeInsets.only(top: 6),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: riskPillPaddingH,
-                        vertical: (riskPillHeight - 10) / 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: risk == RiskLevel.high ? Colors.red : Colors.orange,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        '${risk.name.toUpperCase()} RISK',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          height: 1.0,
-                        ),
-                      ),
+                  Text(
+                    patient.displayName,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
                     ),
+                  ),
+                  const SizedBox(height: Spacing.xs),
+
+                  // Risk pill + optional “NEW”
+                  Row(
+                    children: [
+                      NursePill(
+                        patient.riskLevel.display,
+                        bg: _riskBg(patient.riskLevel, t),
+                        fg: Colors.white,
+                      ),
+                      if (patient.isNew)
+                        Padding(
+                          padding: const EdgeInsets.only(left: Spacing.sm),
+                          child: const NursePill('NEW'),
+                        ),
+                    ],
+                  ),
                 ],
               ),
-              const SizedBox(width: 12),
+            ),
 
-              // Right: Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        text: '${patient.firstName} ${patient.lastName} ',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                        children: prefs.showPreferredPronouns && patient.pronouns != null
-                            ? [
-                                TextSpan(
-                                  text: '(${patient.pronouns})',
-                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                )
-                              ]
-                            : [],
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    if (prefs.showDiagnosis && patient.diagnosis != null)
-                      RichText(
-                        text: TextSpan(
-                          text: 'Diagnosis: ',
-                          style: DefaultTextStyle.of(context)
-                              .style
-                              .copyWith(fontWeight: FontWeight.bold),
-                          children: [
-                            TextSpan(
-                              text: patient.diagnosis!,
-                              style: const TextStyle(fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (prefs.showAge)
-                      RichText(
-                        text: TextSpan(
-                          text: 'Age: ',
-                          style: DefaultTextStyle.of(context)
-                              .style
-                              .copyWith(fontWeight: FontWeight.bold),
-                          children: [
-                            TextSpan(
-                              text: '${patient.age}',
-                              style: const TextStyle(fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (prefs.showRoomNumber && patient.location != null)
-                      RichText(
-                        text: TextSpan(
-                          text: 'Location: ',
-                          style: DefaultTextStyle.of(context)
-                              .style
-                              .copyWith(fontWeight: FontWeight.bold),
-                          children: [
-                            TextSpan(
-                              text: patient.location!,
-                              style: const TextStyle(fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (prefs.showTags && patient.tags != null && patient.tags!.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 4,
-                        runSpacing: 2,
-                        children: patient.tags!
-                            .map(
-                              (tag) => Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: isDark ? Colors.grey[800] : Colors.blueGrey[50],
-                                  border: Border.all(
-                                    color: isDark
-                                        ? Colors.grey.shade600
-                                        : Colors.blueGrey.shade300,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  tag,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500,
-                                    color: isDark ? Colors.white : Colors.black87,
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
+            /* --------- Optional actions (future) --------- */
+            // NurseIconButton(
+            //   icon: CupertinoIcons.ellipsis,
+            //   onTap: () => showPatientMenu(context, patient),
+            // ),
+          ],
         ),
       ),
     );
   }
+
+  /* Helper to map risk level → colour */
+  Color _riskBg(RiskLevel level, AppTheme t) => switch (level) {
+        RiskLevel.high => t.error,
+        RiskLevel.medium => t.secondary,
+        RiskLevel.low => t.divider,
+      };
 }
-// END GPT MOD
