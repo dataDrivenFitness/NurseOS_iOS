@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:nurse_os/extensions/risk_utils.dart';
+import 'package:nurse_os/models/risk_level.dart';
 
 class RiskTagRow extends StatelessWidget {
   final List<String> tags;

@@ -7,7 +7,7 @@ import 'package:nurse_os/widgets/vitals_interactive_section.dart';
 import 'package:nurse_os/widgets/care_plan_section.dart';
 import 'package:nurse_os/widgets/error_banner.dart';
 import 'package:nurse_os/state/vitals_provider.dart';
-import 'package:nurse_os/extensions/risk_utils.dart';
+import 'package:nurse_os/models/risk_level.dart';
 import 'package:nurse_os/extensions/patient_risk_extension.dart';
 
 /// Text styling and dimension constants for the patient detail screen.

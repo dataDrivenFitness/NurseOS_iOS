@@ -249,3 +249,17 @@ When the user asks for a **status recap** (e.g., "progress snapshot", "roadmap u
 | Tool learning curve            | Adoption friction                 | **Design‑system consistency**, minimal UI                                          | Five‑step onboarding walkthrough.                           |
 
 > **Keep this table in sync**: Whenever a new pain point or feature is validated, update this section in the same PR that adds the ticket.
+
+---
+
+## 17. Testing Prompt Rule
+
+To prevent bug‑fix overwhelm, the assistant **must prompt the user to run and test the app** at every logical checkpoint:
+
+1. **After a feature branch compiles locally with no analyzer errors** – before starting the next task.
+2. **Right after golden/widget tests pass in CI** – confirm UI looks correct on a real device.
+3. **Immediately post‑merge into `dev` or `main`** – smoke‑test the merged build.
+
+The prompt should be concise, e.g.:
+
+> "✅ Build is green. When you have a minute, run the app on iOS Simulator and tap through Patient List → Detail to confirm the new pill styles look right. Let me know if anything breaks and we’ll fix before moving on."

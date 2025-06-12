@@ -1,9 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-# Move to the root of the git repository
+# Jump to repo root
 cd "$(git rev-parse --show-toplevel)" || exit 1
 
-echo "📥 Pulling latest changes from GitHub..."
-git pull --rebase
-
-echo "✅ Pull complete."
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+echo "📥  Pulling latest changes on $BRANCH …"
+git pull --rebase --autostash
+echo "✅  Pull complete."

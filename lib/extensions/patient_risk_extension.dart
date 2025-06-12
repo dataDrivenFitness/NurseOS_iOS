@@ -1,6 +1,7 @@
 import 'package:nurse_os/models/patient_model.dart';
-import 'package:nurse_os/extensions/risk_utils.dart'; // Assumes enum RiskLevel { low, medium, high }
+import 'package:nurse_os/models/risk_level.dart';
 
+/*
 extension PatientRiskExtension on PatientModel {
   /// Resolves the patient's risk level based on override, age, diagnosis flags, and tags.
   RiskLevel get resolvedRiskLevel {
@@ -30,3 +31,4 @@ extension PatientRiskExtension on PatientModel {
     return RiskLevel.low;
   }
 }
+*/

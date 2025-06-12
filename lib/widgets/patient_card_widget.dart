@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/patient_model.dart';
+import '../models/risk_level.dart';
 import '../state/display_preferences_provider.dart';
-import '../ui/style.dart';               // ← design tokens
+import '../ui/style.dart';
 import 'nurse_pill.dart';
-import 'nurse_icon_button.dart';
 
-/// Card that shows a patient avatar, name, risk pill and optional “NEW” tag.
-/// Taps navigate to Patient Detail.
-///
-/// All spacing / colours come from design tokens (Guidelines §3).
 class PatientCardWidget extends ConsumerWidget {
   const PatientCardWidget({
     super.key,
@@ -24,7 +20,8 @@ class PatientCardWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = Theme.of(context).extension<AppTheme>()!; // quick token shortcut
+    final t     = Theme.of(context).extension<AppTheme>()!;
+    final level = patient.resolvedRiskLevel;
 
     return InkWell(
       borderRadius: BorderRadius.circular(Radii.card),
@@ -37,24 +34,36 @@ class PatientCardWidget extends ConsumerWidget {
           borderRadius: BorderRadius.circular(Radii.card),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /* ------------------ Avatar ------------------ */
-            CircleAvatar(
-              radius: Radii.avatar,
-              backgroundColor: Colors.blueGrey.withOpacity(.3),
-              foregroundImage: patient.photoUrl?.isNotEmpty == true
-                  ? NetworkImage(patient.photoUrl!)
-                  : null,
-              child: (patient.photoUrl?.isEmpty ?? true)
-                  ? Text(
-                      '${patient.firstName[0]}${patient.lastName[0]}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  : null,
+            /* ── Avatar + risk pill column ── */
+            Column(
+              children: [
+                CircleAvatar(
+                  radius: Radii.avatar,
+                  backgroundColor: Colors.blueGrey.withOpacity(.3),
+                  foregroundImage: patient.photoUrl?.isNotEmpty == true
+                      ? NetworkImage(patient.photoUrl!)
+                      : null,
+                  child: (patient.photoUrl?.isEmpty ?? true)
+                      ? Text(
+                          '${patient.firstName[0]}${patient.lastName[0]}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      : null,
+                ),
+                const SizedBox(height: Spacing.xs),
+                if (level != RiskLevel.low)                // hide Low risk
+                  NursePill(
+                    level.display,
+                    bg: _riskBg(level, t),
+                    fg: Colors.white,
+                  ),
+              ],
             ),
             const SizedBox(width: Spacing.lg),
 
-            /* ------------- Name + pills column ------------- */
+            /* ── Name + tag + NEW column ── */
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,42 +75,52 @@ class PatientCardWidget extends ConsumerWidget {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: Spacing.xs),
-
-                  // Risk pill + optional “NEW”
-                  Row(
-                    children: [
-                      NursePill(
-                        patient.riskLevel.display,
-                        bg: _riskBg(patient.riskLevel, t),
-                        fg: Colors.white,
-                      ),
-                      if (patient.isNew)
-                        Padding(
-                          padding: const EdgeInsets.only(left: Spacing.sm),
-                          child: const NursePill('NEW'),
+                  /* ── NEW: Location / room row ── */
+                  if (patient.location.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: Spacing.xs),
+                      child: Text(
+                        patient.location,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: t.divider,      // muted grey token
                         ),
-                    ],
-                  ),
+                      ),
+                    ),
+
+                  if (patient.tags != null && patient.tags!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: Spacing.xs),
+                      child: Wrap(
+                        spacing: Spacing.xs,
+                        runSpacing: Spacing.xs,
+                        children: patient.tags!
+                            .map((tag) => NursePill(
+                                  tag,
+                                  bg: t.surface,
+                                  fg: t.primary,
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                  if (patient.isNew)
+                    const Padding(
+                      padding: EdgeInsets.only(top: Spacing.xs),
+                      child: NursePill('NEW'),
+                    ),
                 ],
               ),
             ),
-
-            /* --------- Optional actions (future) --------- */
-            // NurseIconButton(
-            //   icon: CupertinoIcons.ellipsis,
-            //   onTap: () => showPatientMenu(context, patient),
-            // ),
           ],
         ),
       ),
     );
   }
 
-  /* Helper to map risk level → colour */
+  /* Map RiskLevel -> pill colour */
   Color _riskBg(RiskLevel level, AppTheme t) => switch (level) {
-        RiskLevel.high => t.error,
+        RiskLevel.high   => t.error,
         RiskLevel.medium => t.secondary,
-        RiskLevel.low => t.divider,
+        RiskLevel.low    => t.divider, // not shown
       };
 }

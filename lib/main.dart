@@ -1,85 +1,47 @@
+// lib/main.dart
+//
+// iOS-only entry point for Nurse OS
+// – Global ProviderScope
+// – Light/Dark themes via design tokens
+// – Portrait-only orientation
+// – Launches Patient List (auth flow TBD)
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'ui/style.dart';
+import 'package:nurse_os/screens/patient_list_screen.dart';
 
-import 'state/theme_provider.dart';
-import 'state/patient_provider.dart';
-import 'mock_data/mock_patient_data.dart';
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-import 'screens/login_screen.dart';
-import 'screens/edit_profile_screen.dart';
-import 'screens/vitals_entry_screen.dart';
-import 'screens/vitals_history_screen.dart';
-import 'screens/vitals_chart_screen.dart';
-import 'screens/vitals_dashboard_screen.dart';
-import 'services/in_memory_patient_repository.dart';
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-
-import 'themes/typography.dart';
-
-void main() {
-  runApp(
-    ProviderScope(
-      overrides: [
-        patientRepositoryProvider.overrideWith(
-          (ref) => InMemoryPatientRepository(patients: mockPatients),
-        ),
-      ],
-      child: const NurseOSApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: NurseOSApp()));
 }
 
-class NurseOSApp extends ConsumerWidget {
+class NurseOSApp extends StatelessWidget {
   const NurseOSApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeModeProvider);
-
-    final lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.indigo);
-    final darkColorScheme = ColorScheme.fromSeed(
-      seedColor: Colors.indigo,
-      brightness: Brightness.dark,
-    );
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'NurseOS',
-      themeMode: themeMode,
-      theme: ThemeData(
-        colorScheme: lightColorScheme,
-        textTheme: buildInterTextTheme(lightColorScheme),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: darkColorScheme,
-        textTheme: buildInterTextTheme(darkColorScheme),
-        useMaterial3: true,
-      ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const LoginScreen(),
-        '/edit-profile': (context) => const EditProfileScreen(),
-        '/vitals-entry': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map;
-          return VitalsEntryScreen(patientId: args['patientId']);
-        },
-        '/vitals-history': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map;
-          return VitalsHistoryScreen(patientId: args['patientId']);
-        },
-        '/vitals-chart': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map;
-          return VitalsChartScreen(patientId: args['patientId']);
-        },
-        '/vitals-dashboard': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map;
-          return VitalsDashboardScreen(
-            patientId: args['patientId'],
-            range: args['range'],
-          );
-        },
-      },
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'Nurse OS',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          brightness: Brightness.light,
+          scaffoldBackgroundColor: AppTheme.light.background,
+          extensions: const [AppTheme.light],
+          fontFamily: 'SF Pro',
+          useMaterial3: true,
+        ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: AppTheme.dark.background,
+          extensions: const [AppTheme.dark],
+          fontFamily: 'SF Pro',
+          useMaterial3: true,
+        ),
+        themeMode: ThemeMode.system,
+        home: const PatientListScreen(),
+      );
 }

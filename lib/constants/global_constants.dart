@@ -1,6 +1,12 @@
 /// Global constants and typedefs for NurseOS
 /// Used to streamline environment toggles and type aliasing across services.
 
+library nurse_os.globals;
+
+import 'package:nurse_os/repositories/patient_repository.dart';
+import 'package:nurse_os/services/vitals_repository.dart';
+import 'package:nurse_os/services/care_plan_repository.dart';
+
 /// Toggle for switching between local and Firebase repositories.
 const bool kUseFirebase = false;
 

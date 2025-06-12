@@ -5,14 +5,6 @@ version: 1.0.0+1
 environment:
   sdk: ">=3.1.0 <4.0.0"
 
-platforms:
-  ios:
-    pluginClass: none
-  android:
-    pluginClass: disabled
-  web:
-    pluginClass: disabled
-
 dependencies:
   flutter:
     sdk: flutter
@@ -23,12 +15,15 @@ dependencies:
   timeago: ^3.5.0
   fl_chart: ^0.64.0
   cupertino_icons: ^1.0.2
+  # flutter_windowmanager: ^0.2.0          # screenshot blocking (Android)
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^4.0.0                  # missing include file
   riverpod_lint: ^2.6.5
   custom_lint: ^0.7.5
+  golden_toolkit: ^0.15.0                # golden tests
 
 flutter:
   uses-material-design: true
@@ -40,3 +35,4 @@ flutter:
 
   assets:
     - assets/fonts/
+    - lib/mock_data/

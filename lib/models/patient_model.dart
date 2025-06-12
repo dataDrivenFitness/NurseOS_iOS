@@ -1,6 +1,7 @@
+import 'package:nurse_os/models/risk_level.dart';
 
-import 'package:nurse_os/extensions/risk_utils.dart' show RiskLevel;
-
+/// Core patient record used across Nurse OS.
+/// Add any new field here first, then migrate into repos/mock data.
 class PatientModel {
   final String id;
   final String firstName;
@@ -9,14 +10,14 @@ class PatientModel {
   final String location;
   final String diagnosis;
   final List<String>? tags;
-  final RiskLevel? riskLevel;
+  final RiskLevel? riskLevel;              // nullable → defaulted in getter
   final String? photoUrl;
   final String? pronouns;
   final DateTime? admittedAt;
-  final List<String>? assignedNurses; // 🆕 NEW FIELD
-  final String? ownerUid;              // 🆕 OPTIONAL (Phase 4)
-  final RiskLevel? manualRiskOverride; // <— ADD THIS
-  final String? createdBy; // <— ADD THIS if needed separately
+  final List<String>? assignedNurses;
+  final String? ownerUid;
+  final RiskLevel? manualRiskOverride;
+  final String? createdBy;
 
   PatientModel({
     required this.id,
@@ -30,58 +31,60 @@ class PatientModel {
     this.photoUrl,
     this.pronouns,
     this.admittedAt,
-    this.assignedNurses,  // include in constructor
+    this.assignedNurses,
     this.ownerUid,
-    this.manualRiskOverride, // <— ADD TO CONSTRUCTOR
-    this.createdBy, // <— Optional
+    this.manualRiskOverride,
+    this.createdBy,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'firstName': firstName,
-      'lastName': lastName,
-      'age': age,
-      'location': location,
-      'diagnosis': diagnosis,
-      'tags': tags,
-      'riskLevel': riskLevel?.name,
-      'photoUrl': photoUrl,
-      'pronouns': pronouns,
-      'admittedAt': admittedAt?.toIso8601String(),
-      'assignedNurses': assignedNurses, // persist
-      'ownerUid': ownerUid,
-      'manualRiskOverride': manualRiskOverride?.name,
-      'createdBy': createdBy,
-    };
-  }
+  /* ── UI helpers ── */
+  String get displayName => '$firstName $lastName';
+  bool    get isNew       => false;                 // TODO real logic
+  RiskLevel get resolvedRiskLevel =>
+      manualRiskOverride ?? riskLevel ?? RiskLevel.low;
 
-  factory PatientModel.fromMap(Map<String, dynamic> map) {
-    return PatientModel(
-      id: map['id'],
-      firstName: map['firstName'],
-      lastName: map['lastName'],
-      age: map['age'],
-      location: map['location'],
-      diagnosis: map['diagnosis'],
-      tags: map['tags'] != null ? List<String>.from(map['tags']) : null,
-      riskLevel: map['riskLevel'] != null
-          ? RiskLevel.values.byName(map['riskLevel'])
-          : null,
-      photoUrl: map['photoUrl'],
-      pronouns: map['pronouns'],
-      admittedAt: map['admittedAt'] != null
-          ? DateTime.parse(map['admittedAt'])
-          : null,
-      assignedNurses: map['assignedNurses'] != null
-          ? List<String>.from(map['assignedNurses'])
-          : null,
-      ownerUid: map['ownerUid'],
-      manualRiskOverride: map['manualRiskOverride'] != null
-    ? RiskLevel.values.byName(map['manualRiskOverride'])
-    : null,
-createdBy: map['createdBy'],
+  /* ── Serialisation helpers ── */
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'firstName': firstName,
+        'lastName': lastName,
+        'age': age,
+        'location': location,
+        'diagnosis': diagnosis,
+        'tags': tags,
+        'riskLevel': riskLevel?.name,
+        'photoUrl': photoUrl,
+        'pronouns': pronouns,
+        'admittedAt': admittedAt?.toIso8601String(),
+        'assignedNurses': assignedNurses,
+        'ownerUid': ownerUid,
+        'manualRiskOverride': manualRiskOverride?.name,
+        'createdBy': createdBy,
+      };
 
-    );
-  }
+  factory PatientModel.fromMap(Map<String, dynamic> map) => PatientModel(
+        id: map['id'],
+        firstName: map['firstName'],
+        lastName: map['lastName'],
+        age: map['age'],
+        location: map['location'],
+        diagnosis: map['diagnosis'],
+        tags: map['tags'] != null ? List<String>.from(map['tags']) : null,
+        riskLevel: map['riskLevel'] != null
+            ? RiskLevel.values.byName(map['riskLevel'])
+            : null,
+        photoUrl: map['photoUrl'],
+        pronouns: map['pronouns'],
+        admittedAt: map['admittedAt'] != null
+            ? DateTime.parse(map['admittedAt'])
+            : null,
+        assignedNurses: map['assignedNurses'] != null
+            ? List<String>.from(map['assignedNurses'])
+            : null,
+        ownerUid: map['ownerUid'],
+        manualRiskOverride: map['manualRiskOverride'] != null
+            ? RiskLevel.values.byName(map['manualRiskOverride'])
+            : null,
+        createdBy: map['createdBy'],
+      );
 }
