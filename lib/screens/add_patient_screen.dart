@@ -1,3 +1,5 @@
+// START GPT MOD
+// Full file modified: replaced 'roomNumber' with 'location' and added inline comments
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nurse_os/models/patient_model.dart';
@@ -18,7 +20,7 @@ class _AddPatientScreenState extends ConsumerState<AddPatientScreen> {
   String _firstName = '';
   String _lastName = '';
   int _age = 0;
-  String _roomNumber = '';
+  String _location = '';
   String _diagnosis = '';
   String? _pronouns;
   RiskLevel? _manualOverride;
@@ -36,7 +38,7 @@ class _AddPatientScreenState extends ConsumerState<AddPatientScreen> {
               FirstNameField(onSaved: (val) => _firstName = val!),
               LastNameField(onSaved: (val) => _lastName = val!),
               AgeField(onSaved: (val) => _age = int.parse(val!)),
-              RoomNumberField(onSaved: (val) => _roomNumber = val!),
+              RoomNumberField(onSaved: (val) => _location = val!),
               DiagnosisField(onSaved: (val) => _diagnosis = val!),
               PronounsField(onSaved: (val) => _pronouns = val),
               RiskOverrideField(onSaved: (val) => _manualOverride = val),
@@ -51,7 +53,7 @@ class _AddPatientScreenState extends ConsumerState<AddPatientScreen> {
                       firstName: _firstName,
                       lastName: _lastName,
                       age: _age,
-                      roomNumber: _roomNumber,
+                      location: _location,
                       diagnosis: _diagnosis,
                       pronouns: _pronouns,
                       manualRiskOverride: _manualOverride,
@@ -74,3 +76,5 @@ class _AddPatientScreenState extends ConsumerState<AddPatientScreen> {
     );
   }
 }
+
+// END GPT MOD

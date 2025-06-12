@@ -1,3 +1,5 @@
+// START GPT MOD
+// Refactored full PatientCardWidget with restored layout, updated field name (location), and risk pill below avatar
 import 'package:flutter/material.dart';
 import 'package:nurse_os/models/patient_model.dart';
 import 'package:nurse_os/extensions/risk_utils.dart';
@@ -24,8 +26,7 @@ class PatientCardWidget extends StatelessWidget {
     const double riskPillPaddingH = 8.0;
 
     final risk = patient.resolvedRiskLevel;
-    final hasRisk = prefs.showHighRiskAlerts &&
-        (risk == RiskLevel.high || risk == RiskLevel.medium);
+    final hasRisk = risk == RiskLevel.high || risk == RiskLevel.medium;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -42,12 +43,12 @@ class PatientCardWidget extends StatelessWidget {
               // Left: Profile + Risk
               Column(
                 children: [
-                buildProfileAvatar(
-                  context: context,
-                  imageUrl: patient.photoUrl,
-                  fullName: '${patient.firstName} ${patient.lastName}',
-                  radius: avatarRadius,
-                ),
+                  buildProfileAvatar(
+                    context: context,
+                    imageUrl: patient.photoUrl,
+                    fullName: '${patient.firstName} ${patient.lastName}',
+                    radius: avatarRadius,
+                  ),
                   if (hasRisk)
                     Container(
                       margin: const EdgeInsets.only(top: 6),
@@ -127,16 +128,16 @@ class PatientCardWidget extends StatelessWidget {
                           ],
                         ),
                       ),
-                    if (prefs.showRoomNumber && patient.roomNumber != null)
+                    if (prefs.showRoomNumber && patient.location != null)
                       RichText(
                         text: TextSpan(
-                          text: 'Room: ',
+                          text: 'Location: ',
                           style: DefaultTextStyle.of(context)
                               .style
                               .copyWith(fontWeight: FontWeight.bold),
                           children: [
                             TextSpan(
-                              text: patient.roomNumber!,
+                              text: patient.location!,
                               style: const TextStyle(fontWeight: FontWeight.normal),
                             ),
                           ],
@@ -183,3 +184,4 @@ class PatientCardWidget extends StatelessWidget {
     );
   }
 }
+// END GPT MOD

@@ -6,7 +6,7 @@ class PatientModel {
   final String firstName;
   final String lastName;
   final int age;
-  final String roomNumber;
+  final String location;
   final String diagnosis;
   final List<String>? tags;
   final RiskLevel? riskLevel;
@@ -23,7 +23,7 @@ class PatientModel {
     required this.firstName,
     required this.lastName,
     required this.age,
-    required this.roomNumber,
+    required this.location,
     required this.diagnosis,
     this.tags,
     this.riskLevel,
@@ -42,7 +42,7 @@ class PatientModel {
       'firstName': firstName,
       'lastName': lastName,
       'age': age,
-      'roomNumber': roomNumber,
+      'location': location,
       'diagnosis': diagnosis,
       'tags': tags,
       'riskLevel': riskLevel?.name,
@@ -62,7 +62,7 @@ class PatientModel {
       firstName: map['firstName'],
       lastName: map['lastName'],
       age: map['age'],
-      roomNumber: map['roomNumber'],
+      location: map['location'],
       diagnosis: map['diagnosis'],
       tags: map['tags'] != null ? List<String>.from(map['tags']) : null,
       riskLevel: map['riskLevel'] != null
