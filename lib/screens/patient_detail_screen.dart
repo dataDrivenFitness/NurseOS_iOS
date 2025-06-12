@@ -150,31 +150,8 @@ class PatientDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-          const SizedBox(height: 16),
-
-          /// Action Buttons
-          Center(
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 12,
-              runSpacing: 8,
-              children: [
-                FilledButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.add),
-                  label: const Text("Add Vitals"),
-                ),
-                OutlinedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.show_chart),
-                  label: const Text("View Graph"),
-                ),
-              ],
-            ),
-          ),
-
           const SizedBox(height: 24),
-
+          const Divider(height: 32),
           /// Care Plan Section
           CarePlanSection(patientId: patient.id),
         ],
